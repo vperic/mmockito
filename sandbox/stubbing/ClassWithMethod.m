@@ -1,7 +1,7 @@
 classdef ClassWithMethod
     methods
         function method(obj)
-            disp('method');
+            disp('method!');
         end
     end
 end
