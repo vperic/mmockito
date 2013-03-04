@@ -1,0 +1,5 @@
+# Lists which files git can ignore (ie. can be safely deleted and will 
+# not be shown as tracked with "git status"). 
+
+# Backup files
+*~
