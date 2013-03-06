@@ -19,3 +19,8 @@ d = SubsrefClass;
 
 % Per the SO question, should work when used in a function:
 whenFunction(); % and it does
+
+%% The real magic
+% If the code is called in cell-mode (ctrl-enter), it works! 
+d = SubsrefClass;
+when(d).aFunc('arg').thenReturn('res'); 
