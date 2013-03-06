@@ -7,7 +7,7 @@ classdef SubsrefClass
     
     methods
         
-        function when(obj)
+        function when2(obj)
            disp('a method');
         end
         
