@@ -5,7 +5,7 @@ clear all;
 
 d = SubsrefClass;
 
-%when(d).aFunc('arg').thenReturn('res'); 
+when(d).aFunc('arg').thenReturn('res'); 
 % Works fine in console, but throws an error from the script:
 % Static method or constructor invocations cannot be indexed.
 % Do not follow the call to the static method or constructor with
