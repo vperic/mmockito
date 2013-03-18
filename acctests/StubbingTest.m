@@ -11,7 +11,7 @@ classdef StubbingTest < TestCase
         function test_stubbedMethodPasses_whenCalledWithoutArguments(obj)
             % Prepare fixture
             m = mock();
-            when(m).stubbedMethod().thenPass();
+            m.when.stubbedMethod().thenPass();
             % Test the SUT
             m.stubbedMethod();
         end
@@ -20,7 +20,7 @@ classdef StubbingTest < TestCase
             m = mock();
             arg1 = 'arg1';
             arg2 = 10;
-            when(m).stubbedMethod(arg1, arg2).thenPass();
+            m.when.stubbedMethod(arg1, arg2).thenPass();
             
             m.stubbedMethod(arg1, arg2);
         end;
@@ -28,7 +28,7 @@ classdef StubbingTest < TestCase
         function test_stubbedMethodReturns_whenCalledWithoutArguments(obj)
             m = mock();
             res = 'result';
-            when(m).stubbedMethod().thenReturn(res);
+            m.when.stubbedMethod().thenReturn(res);
             
             assertEqual(m.stubbedMethod(), res);
         end;
@@ -38,7 +38,7 @@ classdef StubbingTest < TestCase
             arg1 = 2;
             arg2 = true;
             res = 42;
-            when(m).stubbedMethod(arg1, arg2).thenReturn(res);
+            m.when.stubbedMethod(arg1, arg2).thenReturn(res);
             
             assertEqual(m.stubbedMethod(arg1, arg2), res);
         end;
@@ -49,8 +49,8 @@ classdef StubbingTest < TestCase
             arg2 = 2;
             res1 = 10;
             res2 = 20;
-            when(m).stubbedMethod(arg1).thenReturn(res1);
-            when(m).stubbedMethod(arg1, arg2).thenReturn(res2);
+            m.when.stubbedMethod(arg1).thenReturn(res1);
+            m.when.stubbedMethod(arg1, arg2).thenReturn(res2);
             
             assertFalse(m.stubbedMethod(arg1) == m.stubbedMethod(arg1, arg2));
         end;
@@ -58,7 +58,7 @@ classdef StubbingTest < TestCase
         function test_stubbedMethodThrowsException(obj)
             m = mock();
             err1 = error('a:b:c', 'error thrown');
-            when(m).stubbedMethod().thenThrow(err1);
+            m.when.stubbedMethod().thenThrow(err1);
             f = @() m.stubbedMethod;
             % TODO: this and similar examples require more thought
             
