@@ -1,7 +1,9 @@
 function run(what)
+    import matlab.unittest.TestSuite;
+
     switch what,
         case 'acctests',
-            runtests('acctests');
+            run(TestSuite.fromFolder('acctests'))
         otherwise,
             error('Do not know what to run.');
     end

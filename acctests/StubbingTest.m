@@ -1,14 +1,11 @@
-classdef StubbingTest < TestCase
+classdef StubbingTest < matlab.unittest.TestCase
 %StubbingTest Acceptance tests for the mock stubbing behavior.
     
     properties
     end
     
-    methods
-        function obj = StubbingTest(name)
-            obj = obj@TestCase(name)
-        end
-        function test_stubbedMethodPasses_whenCalledWithoutArguments(obj)
+    methods (Test)
+        function test_stubbedMethodPasses_whenCalledWithoutArguments(testCase)
             % Prepare fixture
             m = mock();
             m.when.stubbedMethod().thenPass();
@@ -16,7 +13,7 @@ classdef StubbingTest < TestCase
             m.stubbedMethod();
         end
         
-        function test_stubbedMethodPasses_whenCalledWithArguments(obj)
+        function test_stubbedMethodPasses_whenCalledWithArguments(testCase)
             m = mock();
             arg1 = 'arg1';
             arg2 = 10;
@@ -25,25 +22,25 @@ classdef StubbingTest < TestCase
             m.stubbedMethod(arg1, arg2);
         end;
         
-        function test_stubbedMethodReturns_whenCalledWithoutArguments(obj)
+        function test_stubbedMethodReturns_whenCalledWithoutArguments(testCase)
             m = mock();
             res = 'result';
             m.when.stubbedMethod().thenReturn(res);
             
-            assertEqual(m.stubbedMethod(), res);
+            testCase.assertEqual(m.stubbedMethod(), res);
         end;
         
-        function test_stubbedMethodReturns_whenCalledWithArguments(obj)
+        function test_stubbedMethodReturns_whenCalledWithArguments(testCase)
             m = mock();
             arg1 = 2;
             arg2 = true;
             res = 42;
             m.when.stubbedMethod(arg1, arg2).thenReturn(res);
             
-            assertEqual(m.stubbedMethod(arg1, arg2), res);
+            testCase.assertEqual(m.stubbedMethod(arg1, arg2), res);
         end;
         
-        function test_stubbedMethodReturns_whenCalledWithVaryingArguments(obj)
+        function test_stubbedMethodReturns_whenCalledWithVaryingArguments(testCase)
             m = mock();
             arg1 = 'arg1';
             arg2 = 2;
@@ -52,17 +49,17 @@ classdef StubbingTest < TestCase
             m.when.stubbedMethod(arg1).thenReturn(res1);
             m.when.stubbedMethod(arg1, arg2).thenReturn(res2);
             
-            assertFalse(m.stubbedMethod(arg1) == m.stubbedMethod(arg1, arg2));
+            testCase.assertNotEqual(m.stubbedMethod(arg1), m.stubbedMethod(arg1, arg2));
         end;
         
-        function test_stubbedMethodThrowsException(obj)
+        function test_stubbedMethodThrowsException(testCase)
             m = mock();
             err1 = error('a:b:c', 'error thrown');
             m.when.stubbedMethod().thenThrow(err1);
             f = @() m.stubbedMethod;
             % TODO: this and similar examples require more thought
             
-            assertExceptionThrown(f, 'a:b:c');
+            testCase.assertError(f, 'a:b:c');
         end;
     end
     
