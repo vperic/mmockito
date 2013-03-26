@@ -12,17 +12,25 @@ classdef mock < handle
         end;
         
         function answer = subsref(obj, S)
-%             for i=1:length(S)
-%                 S(i)
-%             end;
-            % TODO: error checking etc
             if S(1).type ~= '.'
                 ME = MException('mmockito:illegalCall', ...
                                 'Must call a function on the mock object');
                 throw(ME);
+                % FIXME: this means arrays of mocks wouldn't work, there
+                % must be a better way to have this check
+                % Arrays also wouldn't work because substruct references
+                % are hardcoded everywhere (ie. S(1).subs)
             end;
             
-            if strcmp(S(1).subs, 'when')
+            mockedFuctionNames = fieldnames(obj.mockery);
+            
+            if ismember(S(1).subs, mockedFuctionNames)
+                answer = cell2mat(subsref(obj.mockery, S));
+                % TODO: handle cells: cell2mat cannot handle cells nested
+                % in cells; cellfun might help here
+                % TODO: this processing should probably be moved to when
+                % the values are added, so it's done only once
+            elseif strcmp(S(1).subs, 'when')
                 % substruct('.','when',
                 %           '.','asdf',
                 %           '()',{[5]},
@@ -34,11 +42,15 @@ classdef mock < handle
                 obj.mockery.(func_name) = {}; 
                 obj.mockery.(func_name) = subsasgn(obj.mockery.(func_name), S(3), S(5).subs);
                 
+                % BIG TODO: the way this is designed, strings won't work:
+                % they'll get translated to their int representation, and
+                % then each char is considered separately and added to the
+                % cell array
+                
             elseif strcmp(S(1).subs, 'verify')
                 % TODO: implement this
             else
                 % TODO: error checking!
-                %answer = subsref(obj.mockery, S);
                 answer = builtin('subsref', obj, S);
             end;
             
