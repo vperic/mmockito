@@ -1,4 +1,4 @@
-function run(what)
+function runtests(what)
     import matlab.unittest.TestSuite;
 
     switch what,
