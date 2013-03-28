@@ -46,15 +46,25 @@ classdef mock < handle
                 %           '.', 'thenReturn',
                 %           '()', {[6]})
                 % TODO: error checking
-                % TODO: here, we can separate the case for thenReturn and
-                % thenPass (do we really need this?)
+
                 func_name = S(2).subs;
                 if ~ismember(func_name, mockedFuctionNames)
                     % create new mock only if it doesn't already exist
                     obj.mockery.(func_name) = {};
                 end;
+
+                if strcmp(S(4).subs, 'thenPass')
+                    mockedValue = {true};
+                elseif strcmp(S(4).subs, 'thenReturn')
+                    mockedValue = S(5).subs;
+                else
+                    ME = MException('mmockito:illegalCall', ...
+                    'After defining a function, must use either thenReturn or thenPass.');
+                    throw(ME);
+                end;
+
                 % we must defer to builtin for this to work
-                obj.mockery.(func_name) = subsasgn(obj.mockery.(func_name), S(3), S(5).subs);
+                obj.mockery.(func_name) = subsasgn(obj.mockery.(func_name), S(3), mockedValue);
                 
                 % BIG TODO: the way this is designed, strings won't work:
                 % they'll get translated to their int representation, and
