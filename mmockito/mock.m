@@ -49,9 +49,11 @@ classdef mock < handle
                 % TODO: here, we can separate the case for thenReturn and
                 % thenPass (do we really need this?)
                 func_name = S(2).subs;
+                if ~ismember(func_name, mockedFuctionNames)
+                    % create new mock only if it doesn't already exist
+                    obj.mockery.(func_name) = {};
+                end;
                 % we must defer to builtin for this to work
-                obj.mockery.(func_name) = {}; 
-                % FIXME: ^^^ is wrong if the field is already created
                 obj.mockery.(func_name) = subsasgn(obj.mockery.(func_name), S(3), S(5).subs);
                 
                 % BIG TODO: the way this is designed, strings won't work:

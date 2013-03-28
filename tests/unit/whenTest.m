@@ -249,6 +249,22 @@ classdef whenTest < matlab.unittest.TestCase
             
             testCase.assertEqual(m.aFunc(arg1, arg2), res);
         end;                        
+        
+        %%% Possible to mock multiple return values of a function
+        % XXX: move this to a separate class?
+        
+        function test_multipleCalls(testCase)
+            m = mock();
+            arg1 = 2;
+            arg2 = 17;
+            res1 = 'good';
+            res2 = 'better';
+            m.when.aFunc(arg1).thenReturn(res1);
+            m.when.aFunc(arg2).thenReturn(res2);
+            
+            testCase.assertEqual(m.aFunc(arg1), res1);
+            testCase.assertEqual(m.aFunc(arg2), res2);
+        end;
     end
     
 end
