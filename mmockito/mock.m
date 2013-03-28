@@ -2,6 +2,15 @@ classdef mock < handle
     %UNTITLED Summary of this class goes here
     %   Detailed explanation goes here
     
+    % General design: we create some big (empty) structs to hold all the
+    % data, which can be problematic. A cleaner solution would be to use
+    % Map objects (so .mockery is a struct of Maps), but only strings
+    % and/or single numbers can be keys in a map. Hence, we'd have to
+    % represent everything as a string... worthwhile compromise? Would also
+    % help with indexing strings. --> would lead to problems later with
+    % matchers (probably; but maybe not, return the matcher as the value
+    % and process it further).
+    
     properties
         mockery = struct(); % struct of mocked objects
     end
@@ -37,9 +46,12 @@ classdef mock < handle
                 %           '.', 'thenReturn',
                 %           '()', {[6]})
                 % TODO: error checking
+                % TODO: here, we can separate the case for thenReturn and
+                % thenPass (do we really need this?)
                 func_name = S(2).subs;
                 % we must defer to builtin for this to work
                 obj.mockery.(func_name) = {}; 
+                % FIXME: ^^^ is wrong if the field is already created
                 obj.mockery.(func_name) = subsasgn(obj.mockery.(func_name), S(3), S(5).subs);
                 
                 % BIG TODO: the way this is designed, strings won't work:
