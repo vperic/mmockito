@@ -30,15 +30,9 @@ classdef mock < handle
             mockedFuctionNames = fieldnames(obj.mockery);
             
             if ismember(S(1).subs, mockedFuctionNames)
-                % TODO: handle cells: cell2mat cannot handle cells nested
-                % in cells; cellfun might help here
-                % TODO: this processing should probably be moved to when
-                % the values are added, so it's done only once
-
                 func_name = S(1).subs;
                 stringKey = char(cell2mat(S(2).subs));
-                % TODO: is cell2mat necessary here? Yes.
-                answer = cell2mat(obj.mockery.(func_name)(stringKey));
+                answer = obj.mockery.(func_name)(stringKey);
 
             elseif strcmp(S(1).subs, 'when')
                 % substruct('.','when',
@@ -55,9 +49,18 @@ classdef mock < handle
                 end;
 
                 if strcmp(S(4).subs, 'thenPass')
-                    mockedValue = {true};
+                    mockedValue = true;
                 elseif strcmp(S(4).subs, 'thenReturn')
-                    mockedValue = S(5).subs;
+                    % check if we were passed a cell of cells
+                    % necessary as cell2mat doesn't work on nested cells,
+                    % and we want to strip away one level of "cell"
+                    % FIXME: if nested cells are different dizes, this
+                    % doesn't work correctly
+                    if iscell(S(5).subs{1})
+                        mockedValue = cellfun(@cell2mat, S(5).subs, 'UniformOutput', false);
+                    else
+                        mockedValue = cell2mat(S(5).subs);
+                    end;
                 else
                     ME = MException('mmockito:illegalCall', ...
                     'After defining a function, must use either thenReturn or thenPass.');
