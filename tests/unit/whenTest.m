@@ -192,8 +192,8 @@ classdef whenTest < matlab.unittest.TestCase
         
         function test_charcharArg_returnChar(testCase)
             m = mock();
-            arg1 = '2';
-            arg2 = '3';
+            arg1 = '2b';
+            arg2 = '333';
             res = 'result';
             m.when.aFunc(arg1, arg2).thenReturn(res);
             
