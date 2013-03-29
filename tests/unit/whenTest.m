@@ -37,7 +37,7 @@ classdef whenTest < matlab.unittest.TestCase
         
         function test_numArg_returnSuccess(testCase)
             m = mock();
-            arg = 2;
+            arg = 2.5;
             m.when.aFunc(arg).thenPass();
             
             testCase.assertTrue(m.aFunc(arg));
@@ -74,7 +74,7 @@ classdef whenTest < matlab.unittest.TestCase
         
         function test_numArg_returnChar(testCase)
             m = mock();
-            arg = 2;
+            arg = 2.5;
             res = 'result';
             m.when.aFunc(arg).thenReturn(res);
             
@@ -112,7 +112,7 @@ classdef whenTest < matlab.unittest.TestCase
         
         function test_numArg_returnCell(testCase)
             m = mock();
-            arg = 2;
+            arg = 2.5;
             res = {'result cell'};
             m.when.aFunc(arg).thenReturn(res);
             
@@ -152,7 +152,7 @@ classdef whenTest < matlab.unittest.TestCase
         
         function test_numnumArg_returnChar(testCase)
             m = mock();
-            arg1 = 2;
+            arg1 = 2.5;
             arg2 = 3;
             res = 'result';
             m.when.aFunc(arg1, arg2).thenReturn(res);
@@ -162,7 +162,7 @@ classdef whenTest < matlab.unittest.TestCase
         
         function test_numcharArg_returnChar(testCase)
             m = mock();
-            arg1 = 2;
+            arg1 = 2.5;
             arg2 = 'arg';
             res = 'result';
             m.when.aFunc(arg1, arg2).thenReturn(res);
@@ -172,7 +172,7 @@ classdef whenTest < matlab.unittest.TestCase
         
         function test_numstructArg_returnChar(testCase)
             m = mock();
-            arg1 = 2;
+            arg1 = 2.5;
             arg2 = struct('a', 5, 'b', 6);
             res = 'result';
             m.when.aFunc(arg1, arg2).thenReturn(res);
@@ -182,7 +182,7 @@ classdef whenTest < matlab.unittest.TestCase
         
         function test_numcellArg_returnChar(testCase)
             m = mock();
-            arg1 = 2;
+            arg1 = 2.5;
             arg2 = {3};
             res = 'result';
             m.when.aFunc(arg1, arg2).thenReturn(res);
@@ -255,7 +255,7 @@ classdef whenTest < matlab.unittest.TestCase
         
         function test_multipleCalls(testCase)
             m = mock();
-            arg1 = 2;
+            arg1 = 2.5;
             arg2 = 17;
             res1 = 'good';
             res2 = 'better';
