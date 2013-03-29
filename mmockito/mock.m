@@ -2,17 +2,13 @@ classdef mock < handle
     %UNTITLED Summary of this class goes here
     %   Detailed explanation goes here
     
-    % General design: we create some big (empty) structs to hold all the
-    % data, which can be problematic. A cleaner solution would be to use
-    % Map objects (so .mockery is a struct of Maps), but only strings
-    % and/or single numbers can be keys in a map. Hence, we'd have to
-    % represent everything as a string... worthwhile compromise? Would also
-    % help with indexing strings. --> would lead to problems later with
-    % matchers (probably; but maybe not, return the matcher as the value
-    % and process it further).
+    % General design: converting arguments to a string is not particularly
+    % robust and might involve a major performance penalty. Is there
+    % another way of indexing? Probably need a helper function to handle
+    % the conversion of arbitrary objects to strings.
     
     properties
-        mockery = struct(); % struct of mocked objects
+        mockery = struct(); % struct of Maps, one for each mocked function
     end
     
     methods
@@ -34,11 +30,16 @@ classdef mock < handle
             mockedFuctionNames = fieldnames(obj.mockery);
             
             if ismember(S(1).subs, mockedFuctionNames)
-                answer = cell2mat(subsref(obj.mockery, S));
                 % TODO: handle cells: cell2mat cannot handle cells nested
                 % in cells; cellfun might help here
                 % TODO: this processing should probably be moved to when
                 % the values are added, so it's done only once
+
+                func_name = S(1).subs;
+                stringKey = char(cell2mat(S(2).subs));
+                % TODO: is cell2mat necessary here? Yes.
+                answer = cell2mat(obj.mockery.(func_name)(stringKey));
+
             elseif strcmp(S(1).subs, 'when')
                 % substruct('.','when',
                 %           '.','asdf',
@@ -50,7 +51,7 @@ classdef mock < handle
                 func_name = S(2).subs;
                 if ~ismember(func_name, mockedFuctionNames)
                     % create new mock only if it doesn't already exist
-                    obj.mockery.(func_name) = {};
+                    obj.mockery.(func_name) = containers.Map;
                 end;
 
                 if strcmp(S(4).subs, 'thenPass')
@@ -64,12 +65,11 @@ classdef mock < handle
                 end;
 
                 % we must defer to builtin for this to work
-                obj.mockery.(func_name) = subsasgn(obj.mockery.(func_name), S(3), mockedValue);
-                
-                % BIG TODO: the way this is designed, strings won't work:
-                % they'll get translated to their int representation, and
-                % then each char is considered separately and added to the
-                % cell array
+                % TODO: use whole substruct, not just the subs (else we'd
+                % treat cells and arrays the same) --> needs more tests!
+                % TODO more tests in general, how does cell2mat behave?
+                stringKey = char(cell2mat(S(3).subs));
+                obj.mockery.(func_name)(stringKey) = mockedValue;
                 
             elseif strcmp(S(1).subs, 'verify')
                 % TODO: implement this
