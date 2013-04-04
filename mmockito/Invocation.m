@@ -26,12 +26,12 @@ classdef Invocation
             obj.S = S;
         end;
         
-        function answer = matches(self, inv)
-            % returns true if the Invocation inv can match self
+        function answer = matches(self, matchingS)
+            % returns true if the substruct matchingS can match self
 
             % isequal recursively compares properties
             % TODO: implement matchers
-            answer = isequal(self, inv);
+            answer = isequal(self.S, matchingS);
         end;
     end
     

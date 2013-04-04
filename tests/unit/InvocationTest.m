@@ -32,11 +32,10 @@ classdef InvocationTest < matlab.unittest.TestCase
             
             i = Invocation(s);
             i2 = Invocation(s2);
-            i3 = Invocation(s2);
             
-            tc.assertTrue(i.matches(i));
-            tc.assertTrue(i.matches(i2));
-            tc.assertTrue(i2.matches(i3));
+            tc.assertTrue(i.matches(s));
+            tc.assertTrue(i.matches(s2));
+            tc.assertTrue(i2.matches(s2));
         end;
         
         function test_notEqualInvocations(tc)
@@ -48,9 +47,9 @@ classdef InvocationTest < matlab.unittest.TestCase
             i2 = Invocation(s2);
             i3 = Invocation(s3);            
             
-            tc.assertFalse(i.matches(i2));
-            tc.assertFalse(i.matches(i3));
-            tc.assertFalse(i2.matches(i3));
+            tc.assertFalse(i.matches(s2));
+            tc.assertFalse(i.matches(s3));
+            tc.assertFalse(i2.matches(s3));
         end;
     end
 end

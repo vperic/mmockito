@@ -35,9 +35,8 @@ classdef mock < handle
             % of 1. Either protect against this or handle it better. Other
             % than inspecting mockery directly, there's no actual use-case
             % where S isn't longer than 2.
-            inv = Invocation(S(1:2));
             for i=1:obj.mockeryLength
-                if obj.mockery{i,1}.matches(inv)
+                if obj.mockery{i,1}.matches(S(1:2))
                     if isa(obj.mockery{i,2}{1}, 'MException')
                         throw(obj.mockery{i,2}{1});
                     end;
