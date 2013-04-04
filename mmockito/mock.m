@@ -38,6 +38,9 @@ classdef mock < handle
             inv = Invocation(S(1:2));
             for i=1:obj.mockeryLength
                 if obj.mockery{i,1}.matches(inv)
+                    if isa(obj.mockery{i,2}{1}, 'MException')
+                        throw(obj.mockery{i,2}{1});
+                    end;
                     answer = obj.mockery{i,2}{1};
                     return;
                 end;
@@ -55,9 +58,16 @@ classdef mock < handle
                     mockedValue = {true};
                 elseif strcmp(S(4).subs, 'thenReturn')
                     mockedValue = S(5).subs;
+                elseif strcmp(S(4).subs, 'thenThrow')
+                    if ~isa(S(5).subs{1}, 'MException')
+                        ME = MException('mmockito:illegalCall', ...
+                        'Must use a MException object as argument to thenThrow.');
+                        throw(ME);
+                    end;
+                    mockedValue = S(5).subs;
                 else
                     ME = MException('mmockito:illegalCall', ...
-                    'After defining a function, must use either thenReturn or thenPass.');
+                    'After defining a function, must use either thenReturn, thenPass or thenThrow.');
                     throw(ME);
                 end;
 
