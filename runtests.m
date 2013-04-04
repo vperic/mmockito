@@ -3,6 +3,8 @@ function r = runtests(what)
     addpath('mmockito');
 
     switch what,
+        case 'all',
+            r = run(TestSuite.fromFolder('tests', 'IncludingSubfolders', true));
         case 'acceptance',
             r = run(TestSuite.fromFolder('tests\acceptance'));
         case 'unit',
