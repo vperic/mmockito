@@ -23,6 +23,12 @@ classdef Invocation
                 throw(ME);
             end;
             
+            if S(2).type == '.'
+                ME = MException('mmockito:illegalInvocation', ...
+            'A function must have arguments, it cannot be called with a dot argument.');
+                throw(ME);
+            end;            
+            
             obj.S = S;
         end;
         
