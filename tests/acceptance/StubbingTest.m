@@ -54,12 +54,10 @@ classdef StubbingTest < matlab.unittest.TestCase
         
         function test_stubbedMethodThrowsException(testCase)
             m = mock();
-            err1 = error('a:b:c', 'error thrown');
+            err1 = MException('a:b:c', 'error thrown');
             m.when.stubbedMethod().thenThrow(err1);
-            f = @() m.stubbedMethod;
-            % TODO: this and similar examples require more thought
             
-            testCase.assertError(f, 'a:b:c');
+            testCase.assertError(@() m.stubbedMethod(), 'a:b:c');
         end;
     end
     

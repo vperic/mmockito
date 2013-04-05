@@ -239,7 +239,7 @@ classdef whenTest < matlab.unittest.TestCase
             
             testCase.assertEqual(m.aFunc(arg1, arg2), res);
         end;        
-        
+
         function test_cellcellArg_returnChar(testCase)
             m = mock();
             arg1 = {'a','2'};
@@ -249,7 +249,7 @@ classdef whenTest < matlab.unittest.TestCase
             
             testCase.assertEqual(m.aFunc(arg1, arg2), res);
         end;                        
-        
+
         %%% Possible to mock multiple return values of a function
         % XXX: move this to a separate class?
         
@@ -261,9 +261,34 @@ classdef whenTest < matlab.unittest.TestCase
             res2 = 'better';
             m.when.aFunc(arg1).thenReturn(res1);
             m.when.aFunc(arg2).thenReturn(res2);
-            
+
             testCase.assertEqual(m.aFunc(arg1), res1);
             testCase.assertEqual(m.aFunc(arg2), res2);
+        end;
+        
+        %%% Test that not just the first arguments are used
+        
+        function test_sameFirstArgument_differentReturns(tc)
+            m = mock();
+            arg1 = 3;
+            arg2 = 'joy';
+            arg3 = 'radost';
+            m.when.aFunc(arg1, arg2).thenReturn(5);
+            m.when.aFunc(arg1, arg3).thenReturn(6);
+
+            tc.assertNotEqual(m.aFunc(arg1, arg2), m.aFunc(arg1, arg3));
+        end;
+        
+        function test_sameFirstSecondArguments_differentReturns(tc)
+            m = mock();
+            arg1 = 2;
+            arg2 = 3;
+            arg31 = 4;
+            arg32 = 5;
+            m.when.aFunc(arg1, arg2, arg31).thenReturn(13);
+            m.when.aFunc(arg1, arg2, arg32).thenReturn(31);
+
+            tc.assertNotEqual(m.aFunc(arg1, arg2, arg31), m.aFunc(arg1, arg2, arg32));
         end;
     end
     

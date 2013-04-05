@@ -2,13 +2,11 @@ classdef mock < handle
     %UNTITLED Summary of this class goes here
     %   Detailed explanation goes here
     
-    % General design: converting arguments to a string is not particularly
-    % robust and might involve a major performance penalty. Is there
-    % another way of indexing? Probably need a helper function to handle
-    % the conversion of arbitrary objects to strings.
+    % General design: mockery is a cell array of pairs (Invocation, result)
     
     properties
-        mockery = struct(); % struct of Maps, one for each mocked function
+        mockery = {};
+        mockeryLength = 0;
     end
     
     methods
@@ -27,52 +25,55 @@ classdef mock < handle
                 % are hardcoded everywhere (ie. S(1).subs)
             end;
             
-            mockedFuctionNames = fieldnames(obj.mockery);
-            
-            if ismember(S(1).subs, mockedFuctionNames)
-                func_name = S(1).subs;
-                stringKey = char(cell2mat(S(2).subs));
-                answer = obj.mockery.(func_name)(stringKey);
+            % used for debugging
+            if strcmp(S(1).subs, 'mockery')
+                answer = builtin('subsref', obj, S);
+                return;
+            end;
 
-            elseif strcmp(S(1).subs, 'when')
+            % FIXME: this is done every time and errors if S has a length
+            % of 1. Either protect against this or handle it better. Other
+            % than inspecting mockery directly, there's no actual use-case
+            % where S isn't longer than 2.
+            for i=1:obj.mockeryLength
+                if obj.mockery{i,1}.matches(S(1:2))
+                    if isa(obj.mockery{i,2}{1}, 'MException')
+                        throw(obj.mockery{i,2}{1});
+                    end;
+                    answer = obj.mockery{i,2}{1};
+                    return;
+                end;
+            end;
+
+            if strcmp(S(1).subs, 'when')
                 % substruct('.','when',
                 %           '.','asdf',
                 %           '()',{[5]},
                 %           '.', 'thenReturn',
                 %           '()', {[6]})
-                % TODO: error checking
-
-                func_name = S(2).subs;
-                if ~ismember(func_name, mockedFuctionNames)
-                    % create new mock only if it doesn't already exist
-                    obj.mockery.(func_name) = containers.Map;
-                end;
+                inv = Invocation(S(2:3));
 
                 if strcmp(S(4).subs, 'thenPass')
-                    mockedValue = true;
+                    mockedValue = {true};
                 elseif strcmp(S(4).subs, 'thenReturn')
-                    % check if we were passed a cell of cells
-                    % necessary as cell2mat doesn't work on nested cells,
-                    % and we want to strip away one level of "cell"
-                    % FIXME: if nested cells are different dizes, this
-                    % doesn't work correctly
-                    if iscell(S(5).subs{1})
-                        mockedValue = cellfun(@cell2mat, S(5).subs, 'UniformOutput', false);
-                    else
-                        mockedValue = cell2mat(S(5).subs);
+                    mockedValue = S(5).subs;
+                elseif strcmp(S(4).subs, 'thenThrow')
+                    if ~isa(S(5).subs{1}, 'MException')
+                        ME = MException('mmockito:illegalCall', ...
+                        'Must use a MException object as argument to thenThrow.');
+                        throw(ME);
                     end;
+                    mockedValue = S(5).subs;
                 else
                     ME = MException('mmockito:illegalCall', ...
-                    'After defining a function, must use either thenReturn or thenPass.');
+                    'After defining a function, must use either thenReturn, thenPass or thenThrow.');
                     throw(ME);
                 end;
 
                 % we must defer to builtin for this to work
-                % TODO: use whole substruct, not just the subs (else we'd
-                % treat cells and arrays the same) --> needs more tests!
-                % TODO more tests in general, how does cell2mat behave?
-                stringKey = char(cell2mat(S(3).subs));
-                obj.mockery.(func_name)(stringKey) = mockedValue;
+                obj.mockeryLength = obj.mockeryLength + 1;
+                obj.mockery{obj.mockeryLength, 1} = inv;
+                obj.mockery{obj.mockeryLength, 2} = mockedValue;
                 
             elseif strcmp(S(1).subs, 'verify')
                 % TODO: implement this
