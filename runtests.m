@@ -1,6 +1,6 @@
 function r = runtests(what)
     import matlab.unittest.TestSuite;
-    addpath('mmockito');
+    addpath(fullfile(pwd, 'mmockito'));
 
     switch what,
         case 'all',
