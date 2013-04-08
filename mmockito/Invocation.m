@@ -1,15 +1,16 @@
 classdef Invocation
-    %INVOCATION Summary of this class goes here
-    %   Detailed explanation goes here
-    
-    % Holds the two substructs which define an invocation to an arbitrary
-    % function. They have the following fields:
+    %Invocation holds the two substruct which define a method invocation
+    %   The two substruct are enough to define an arbitrary method call.
+    %   Invocation is a value class, there is no difference between two
+    %   Invocations created with the same substructs. The class only has a
+    %   constructor which checks if we defined a valid method call.
     %
-    %   S(1).type = '.'   anything else is an error, we only mock functions
+    %   S(1).type = '.'   we only mock functions
     %   S(1).subs = '...' the function name we are mocking
     %
-    %   S(2).type         any legal type
+    %   S(2).type = '()'  functions are only called with round brackets
     %   S(2).subs         call arguments, can be anything
+
     
     properties
         S;
@@ -25,20 +26,13 @@ classdef Invocation
             
             if S(2).type == '.'
                 ME = MException('mmockito:illegalInvocation', ...
-            'A function must have arguments, it cannot be called with a dot argument.');
+            'A function must be called with round brackets.');
                 throw(ME);
             end;            
             
             obj.S = S;
         end;
-        
-        function answer = matches(self, matchingS)
-            % returns true if the substruct matchingS can match self
 
-            % isequal recursively compares properties
-            % TODO: implement matchers
-            answer = isequal(self.S, matchingS);
-        end;
     end
     
 end

@@ -31,27 +31,13 @@ classdef mock < handle
                 return;
             end;
 
-            % FIXME: this is done every time and errors if S has a length
-            % of 1. Either protect against this or handle it better. Other
-            % than inspecting mockery directly, there's no actual use-case
-            % where S isn't longer than 2.
-            for i=1:obj.mockeryLength
-                if obj.mockery{i,1}.matches(S(1:2))
-                    if isa(obj.mockery{i,2}{1}, 'MException')
-                        throw(obj.mockery{i,2}{1});
-                    end;
-                    answer = obj.mockery{i,2}{1};
-                    return;
-                end;
-            end;
-
             if strcmp(S(1).subs, 'when')
                 % substruct('.','when',
                 %           '.','asdf',
                 %           '()',{[5]},
                 %           '.', 'thenReturn',
                 %           '()', {[6]})
-                inv = Invocation(S(2:3));
+                invmatcher = InvocationMatcher(Invocation(S(2:3)));
 
                 if strcmp(S(4).subs, 'thenPass')
                     mockedValue = {true};
@@ -70,16 +56,28 @@ classdef mock < handle
                     throw(ME);
                 end;
 
-                % we must defer to builtin for this to work
                 obj.mockeryLength = obj.mockeryLength + 1;
-                obj.mockery{obj.mockeryLength, 1} = inv;
+                obj.mockery{obj.mockeryLength, 1} = invmatcher;
                 obj.mockery{obj.mockeryLength, 2} = mockedValue;
                 
             elseif strcmp(S(1).subs, 'verify')
                 % TODO: implement this
             else
                 % TODO: error checking!
-                answer = builtin('subsref', obj, S);
+
+                % FIXME: this is done every time and errors if S has a length
+                % of 1. Either protect against this or handle it better. Other
+                % than inspecting mockery directly, there's no actual use-case
+                % where S isn't longer than 2.
+                for i=1:obj.mockeryLength
+                    if obj.mockery{i,1}.matches(Invocation(S(1:2)))
+                        if isa(obj.mockery{i,2}{1}, 'MException')
+                            throw(obj.mockery{i,2}{1});
+                        end;
+                        answer = obj.mockery{i,2}{1};
+                        return;
+                    end;
+                end;                
             end;
             
             
