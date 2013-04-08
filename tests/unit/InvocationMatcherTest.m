@@ -2,6 +2,9 @@ classdef InvocationMatcherTest < matlab.unittest.TestCase
     %InvocationMatcherTest tests the behavior of InvocationMatcher
     %   * Test the constructor.
     %   * Test that matches works on identical Invocations.
+    %   * Test different method names.
+    %   * Test a few matchers to see if they work.
+    %   * Test matcher / non-matcher combination
     
     properties
     end
@@ -13,7 +16,6 @@ classdef InvocationMatcherTest < matlab.unittest.TestCase
             im = InvocationMatcher(i);
             
             tc.assertEqual(im.func_name, 'asdf');
-            tc.assertEqual(im.arguments, {[5] 'string'});
         end;
         
         function test_equalInvocations(tc)
@@ -39,6 +41,61 @@ classdef InvocationMatcherTest < matlab.unittest.TestCase
             tc.assertFalse(im.matches(inv2));
             tc.assertFalse(im.matches(inv3));
             tc.assertFalse(im2.matches(inv3));
+        end;
+        
+        function test_differentMethodNames(tc)
+            i = Invocation(substruct('.', 'asdf', '()', {[5]}));
+            i2 = Invocation(substruct('.', 'fdsa', '()', {[5]}));
+            
+            im = InvocationMatcher(i);
+            
+            tc.assertFalse(im.matches(i2));
+        end;
+            
+        
+        function test_IsGreaterThanMatcher(tc)
+            import matlab.unittest.constraints.IsGreaterThan;
+
+            i = Invocation(substruct('.', 'asdf', '()', {IsGreaterThan(5)}));
+            i2 = Invocation(substruct('.', 'asdf', '()', {4}));
+            i3 = Invocation(substruct('.', 'asdf', '()', {6 7 8 9}));            
+            i4 = Invocation(substruct('.', 'asdf', '()', {6}));
+
+            im = InvocationMatcher(i);
+
+            tc.assertFalse(im.matches(i2));
+            tc.assertFalse(im.matches(i3));
+            tc.assertTrue(im.matches(i4));
+        end;
+        
+        function test_ContainsSubstringMatcher(tc)
+            import matlab.unittest.constraints.ContainsSubstring;
+
+            i = Invocation(substruct('.', 'asdf', '()', {ContainsSubstring('str')}));
+            i2 = Invocation(substruct('.', 'asdf', '()', {'stingy'}));
+            i3 = Invocation(substruct('.', 'asdf', '()', {'sting' 'me'}));            
+            i4 = Invocation(substruct('.', 'asdf', '()', {'stringy'}));
+
+            im = InvocationMatcher(i);
+
+            tc.assertFalse(im.matches(i2));
+            tc.assertFalse(im.matches(i3));
+            tc.assertTrue(im.matches(i4));
+        end;        
+        
+        function test_matcherNonMatcher(tc)
+            import matlab.unittest.constraints.IsEmpty;
+            
+            i = Invocation(substruct('.', 'asdf', '()', {IsEmpty 5}));
+            i2 = Invocation(substruct('.', 'asdf', '()', {[] 6}));
+            i3 = Invocation(substruct('.', 'asdf', '()', {[]}));
+            i4 = Invocation(substruct('.', 'asdf', '()', {[] 5}));
+            
+            im = InvocationMatcher(i);
+            
+            tc.assertFalse(im.matches(i2));
+            tc.assertFalse(im.matches(i3));
+            tc.assertTrue(im.matches(i4));
         end;
     end;
     

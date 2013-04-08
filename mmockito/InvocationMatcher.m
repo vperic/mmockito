@@ -7,25 +7,66 @@ classdef InvocationMatcher
     %   correctness) but provides a matches method which returns true if
     %   the InvocationMatcher matches the given Invocation.
     
+    %   We construct the matchers by inspecting S(2).subs of the passed
+    %   Invocation. If the object is a matcher already, we leave it be; if
+    %   not, we convert it to an "IsEqualTo" matcher. There is a special 
+    %   case when passed empty input - a 1x0 cell array is returned.
+    %   Currently, this is handled with a separate if statement but a
+    %   better way may be divised. 
+    
     properties
         func_name;
-        arguments = cell(1,0);
+        args;
     end
     
     methods
         function self = InvocationMatcher(Invocation)
+            import matlab.unittest.constraints.*;
+            
             self.func_name = Invocation.S(1).subs;
-            self.arguments = Invocation.S(2).subs;
+            self.args = Invocation.S(2).subs;
+            
+            % create matchers
+            argLength = size(self.args, 2);
+            if argLength == 0
+                % special case, no arguments
+                self.args = {IsEqualTo(cell(1,0))};
+            else
+                newArgs = cell(1, argLength);
+                for i=1:argLength
+                    matcher = self.args{i};
+                    if ~isa(matcher, 'Constraint')
+                        newArgs{i} = IsEqualTo(matcher);
+                    else
+                        newArgs{i} = matcher;
+                    end;
+                end;
+                
+                self.args = newArgs;
+            end;
+            
         end;
 
         function answer = matches(self, Inv)
             % returns true if Inv can match self
+            import matlab.unittest.constraints.*;
 
-            % isequal recursively compares properties
-            % TODO: implement matchers
-            answer = isequal(self.func_name, Inv.S(1).subs) && ...
-                     isequal(self.arguments, Inv.S(2).subs);
+            if ~strcmp(self.func_name, Inv.S(1).subs)
+                answer = false;
+                return;
+            end;
+            
+            argLength = size(Inv.S(2).subs, 2);
+            if argLength == 0
+                % special case, no arguments
+                answer = satisfiedBy(self.args{1}, cell(1,0));
+            elseif argLength ~= size(self.args, 2)
+                answer = false;
+            else
+                answer = all(cellfun(@satisfiedBy, self.args, Inv.S(2).subs));
+            end;
         end;
+
     end;
 end
 
