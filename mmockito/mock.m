@@ -77,7 +77,12 @@ classdef mock < handle
                         answer = obj.mockery{i,2}{1};
                         return;
                     end;
-                end;                
+                end;
+                
+                ME = MException('mmockito:unknownMethod', ...
+                    'The called method is not mocked.');
+                % TODO: add the called method name and test this
+                throw(ME);
             end;
             
             
