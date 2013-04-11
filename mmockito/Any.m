@@ -23,7 +23,7 @@ classdef Any < Matcher
             elseif nargin==1
                 self.c = IsInstanceOf(varargin{1});
             else
-                ME = MException('mmockito:illegalAny', ...
+                ME = MException('mmockito:illegalMatcher', ...
                 'Any can only be called with zero or one arguments.');
                 throw(ME);
             end;
