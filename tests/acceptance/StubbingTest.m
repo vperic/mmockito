@@ -64,8 +64,8 @@ classdef StubbingTest < matlab.unittest.TestCase
             import matlab.unittest.constraints.*;
 
             m = mock();
-            m.when.asdf(4, HasNaN).thenReturn('a NaN');
-            m.when.asdf(4, IsFinite).thenReturn('no NaN');
+            m.when.asdf(4, argThat(HasNaN)).thenReturn('a NaN');
+            m.when.asdf(4, argThat(IsFinite)).thenReturn('no NaN');
             
             tc.assertEqual(m.asdf(4, [5 6 NaN]), 'a NaN');
             tc.assertEqual(m.asdf(4, [5 6 7]), 'no NaN');

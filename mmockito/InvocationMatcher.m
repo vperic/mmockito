@@ -30,13 +30,13 @@ classdef InvocationMatcher
             argLength = size(self.args, 2);
             if argLength == 0
                 % special case, no arguments
-                self.args = {IsEqualTo(cell(1,0))};
+                self.args = {argThat(IsEqualTo(cell(1,0)))};
             else
                 newArgs = cell(1, argLength);
                 for i=1:argLength
                     matcher = self.args{i};
-                    if ~isa(matcher, 'Constraint')
-                        newArgs{i} = IsEqualTo(matcher);
+                    if ~isa(matcher, 'Matcher')
+                        newArgs{i} = argThat(IsEqualTo(matcher));
                     else
                         newArgs{i} = matcher;
                     end;

@@ -56,7 +56,7 @@ classdef InvocationMatcherTest < matlab.unittest.TestCase
         function test_IsGreaterThanMatcher(tc)
             import matlab.unittest.constraints.IsGreaterThan;
 
-            i = Invocation(substruct('.', 'asdf', '()', {IsGreaterThan(5)}));
+            i = Invocation(substruct('.', 'asdf', '()', {argThat(IsGreaterThan(5))}));
             i2 = Invocation(substruct('.', 'asdf', '()', {4}));
             i3 = Invocation(substruct('.', 'asdf', '()', {6 7 8 9}));            
             i4 = Invocation(substruct('.', 'asdf', '()', {6}));
@@ -71,7 +71,7 @@ classdef InvocationMatcherTest < matlab.unittest.TestCase
         function test_ContainsSubstringMatcher(tc)
             import matlab.unittest.constraints.ContainsSubstring;
 
-            i = Invocation(substruct('.', 'asdf', '()', {ContainsSubstring('str')}));
+            i = Invocation(substruct('.', 'asdf', '()', {argThat(ContainsSubstring('str'))}));
             i2 = Invocation(substruct('.', 'asdf', '()', {'stingy'}));
             i3 = Invocation(substruct('.', 'asdf', '()', {'sting' 'me'}));            
             i4 = Invocation(substruct('.', 'asdf', '()', {'stringy'}));
@@ -86,7 +86,7 @@ classdef InvocationMatcherTest < matlab.unittest.TestCase
         function test_matcherNonMatcher(tc)
             import matlab.unittest.constraints.IsEmpty;
             
-            i = Invocation(substruct('.', 'asdf', '()', {IsEmpty 5}));
+            i = Invocation(substruct('.', 'asdf', '()', {argThat(IsEmpty) 5}));
             i2 = Invocation(substruct('.', 'asdf', '()', {[] 6}));
             i3 = Invocation(substruct('.', 'asdf', '()', {[]}));
             i4 = Invocation(substruct('.', 'asdf', '()', {[] 5}));
