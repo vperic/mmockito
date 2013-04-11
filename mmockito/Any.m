@@ -8,6 +8,9 @@ classdef Any < Matcher
     %                  can be given by its classname of meta.class instance
     
     % Internally, just falls back on the IsInstanceOf(class) constraint.
+    %
+    % The Matcher is Any (as opposed to any) so as not to override the
+    % MATLAB builtin.
     
     properties
         c;
