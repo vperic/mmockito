@@ -1,10 +1,12 @@
 classdef Matcher
-    %Matcher is an interface for comparisons in arguments
+    %Matcher is an interface for comparisons in mocked arguments
     %   When mocking, we will sometimes want to specify a rule to match an
     %   argument to, not just a constant (eg. "all doubles" or "all strings
     %   starting with xx"). Matchers are the interface which allows us to
     %   do this. Each Matcher only needs to provide a method, satisfiedBy, 
     %   which returns true if a given value satisfies the Matcher.
+    %
+    %   The argThat Matcher allows the usage of Constraints as Matchers.
     
     %   Internally, Matchers are the same as Constraints from the new
     %   matlab.unittest module, except they do not need to provide a

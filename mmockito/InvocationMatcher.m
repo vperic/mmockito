@@ -27,6 +27,9 @@ classdef InvocationMatcher
             self.args = Invocation.S(2).subs;
             
             % create matchers
+            % NOTE: using argThat is an additional layer of abstraction
+            % which is not required. If performance ever becomes a problem,
+            % it might be a good idea to write a Matcher directly.
             argLength = size(self.args, 2);
             if argLength == 0
                 % special case, no arguments
