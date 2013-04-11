@@ -70,6 +70,16 @@ classdef StubbingTest < matlab.unittest.TestCase
             tc.assertEqual(m.asdf(4, [5 6 NaN]), 'a NaN');
             tc.assertEqual(m.asdf(4, [5 6 7]), 'no NaN');
         end;
+        
+        function test_AnyMatcher(tc)
+            m = mock();
+            m.when.asdf(Any(?double), Any()).thenReturn('a double');
+            m.when.asdf(Any('char'), 10).thenReturn('a char10');
+            
+            tc.assertEqual(m.asdf(5, 'str'), 'a double');
+            tc.assertEqual(m.asdf(13, 15), 'a double');
+            tc.assertEqual(m.asdf('s', 10), 'a char10');
+        end;
     end
     
 end
