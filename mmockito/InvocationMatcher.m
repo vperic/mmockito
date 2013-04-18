@@ -27,19 +27,19 @@ classdef InvocationMatcher
             self.args = Invocation.S(2).subs;
             
             % create matchers
-            % NOTE: using argThat is an additional layer of abstraction
+            % NOTE: using ArgThat is an additional layer of abstraction
             % which is not required. If performance ever becomes a problem,
             % it might be a good idea to write a Matcher directly.
             argLength = size(self.args, 2);
             if argLength == 0
                 % special case, no arguments
-                self.args = {argThat(IsEqualTo(cell(1,0)))};
+                self.args = {ArgThat(IsEqualTo(cell(1,0)))};
             else
                 newArgs = cell(1, argLength);
                 for i=1:argLength
                     matcher = self.args{i};
                     if ~isa(matcher, 'Matcher')
-                        newArgs{i} = argThat(IsEqualTo(matcher));
+                        newArgs{i} = ArgThat(IsEqualTo(matcher));
                     else
                         newArgs{i} = matcher;
                     end;

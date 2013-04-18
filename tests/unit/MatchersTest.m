@@ -7,17 +7,17 @@ classdef MatchersTest < matlab.unittest.TestCase
     end
     
     methods(Test)
-        function test_argThat_constructor(tc)
+        function test_ArgThat_constructor(tc)
             import matlab.unittest.constraints.*;
             
-            argThat(HasSize([3 2]));
-            tc.assertError(@() argThat(3), 'mmockito:illegalMatcher');
+            ArgThat(HasSize([3 2]));
+            tc.assertError(@() ArgThat(3), 'mmockito:illegalMatcher');
         end;
         
-        function test_argThat_satisfiedBy(tc)
+        function test_ArgThat_satisfiedBy(tc)
             import matlab.unittest.constraints.*;
             
-            a = argThat(IsLessThan(4));
+            a = ArgThat(IsLessThan(4));
             
             tc.assertTrue(a.satisfiedBy(3));
             tc.assertFalse(a.satisfiedBy(5));

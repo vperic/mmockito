@@ -6,7 +6,7 @@ classdef Matcher
     %   do this. Each Matcher only needs to provide a method, satisfiedBy, 
     %   which returns true if a given value satisfies the Matcher.
     %
-    %   The argThat Matcher allows the usage of Constraints as Matchers.
+    %   The ArgThat Matcher allows the usage of Constraints as Matchers.
     
     %   Internally, Matchers are the same as Constraints from the new
     %   matlab.unittest module, except they do not need to provide a
