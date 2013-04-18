@@ -22,12 +22,6 @@ classdef Mock < handle
                 % Arrays also wouldn't work because substruct references
                 % are hardcoded everywhere (ie. S(1).subs)
             end;
-            
-            % used for debugging
-            if strcmp(S(1).subs, 'mockery')
-                answer = builtin('subsref', obj, S);
-                return;
-            end;
 
             if strcmp(S(1).subs, 'when')
                 % substruct('.','when',
@@ -61,29 +55,22 @@ classdef Mock < handle
             elseif strcmp(S(1).subs, 'verify')
                 % TODO: implement this
             else
-                % TODO: error checking!
-
-                % FIXME: this is done every time and errors if S has a length
-                % of 1. Either protect against this or handle it better. Other
-                % than inspecting mockery directly, there's no actual use-case
-                % where S isn't longer than 2.
-                for i=1:obj.mockeryLength
-                    if obj.mockery{i,1}.matches(Invocation(S(1:2)))
-                        if isa(obj.mockery{i,2}{1}, 'MException')
-                            throw(obj.mockery{i,2}{1});
+                if length(S) > 1
+                    % otherwise we get index exceeded errors due to the
+                    % Invocation(S(1:2)) call
+                    for i=1:obj.mockeryLength
+                        if obj.mockery{i,1}.matches(Invocation(S(1:2)))
+                            if isa(obj.mockery{i,2}{1}, 'MException')
+                                throw(obj.mockery{i,2}{1});
+                            end;
+                            answer = obj.mockery{i,2}{1};
+                            return;
                         end;
-                        answer = obj.mockery{i,2}{1};
-                        return;
                     end;
                 end;
-                
-                ME = MException('mmockito:unknownMethod', ...
-                    'The called method is not mocked.');
-                % TODO: add the called method name and test this
-                throw(ME);
+
+                answer = builtin('subsref', obj, S);
             end;
-            
-            
         end;
     end
     
