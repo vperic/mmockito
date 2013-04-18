@@ -21,6 +21,7 @@ classdef InvocationMatcher
     
     methods
         function self = InvocationMatcher(Invocation)
+            import mmockito.internal.*;
             import matlab.unittest.constraints.*;
             
             self.func_name = Invocation.S(1).subs;
@@ -53,6 +54,7 @@ classdef InvocationMatcher
         function answer = matches(self, Inv)
             % returns true if Inv can match self
             import matlab.unittest.constraints.*;
+            import mmockito.internal.*;
 
             if ~strcmp(self.func_name, Inv.S(1).subs)
                 answer = false;

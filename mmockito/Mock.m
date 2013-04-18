@@ -11,6 +11,8 @@ classdef Mock < handle
     
     methods       
         function answer = subsref(obj, S)
+            import mmockito.internal.*;
+
             if S(1).type ~= '.'
                 ME = MException('mmockito:illegalCall', ...
                                 'Must call a function on the mock object');

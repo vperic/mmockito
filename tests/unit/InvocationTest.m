@@ -8,12 +8,16 @@ classdef InvocationTest < matlab.unittest.TestCase
     
     methods (Test)
         function test_correctConstructor(tc)
+            import mmockito.internal.*;
+            
             s = substruct('.', 'asdf', '()', {[5]});
             
             inv = Invocation(s);
         end;
         
         function test_incorrectConstructor(tc)
+            import mmockito.internal.*;
+            
             s = substruct('()', '{[5]}', '.', 'asdf');
             s2 = substruct('{}', {[5 6]}, '()', {[4]});
             s3 = substruct('.', 'func', '.', 'otherFunc');

@@ -11,6 +11,8 @@ classdef InvocationMatcherTest < matlab.unittest.TestCase
     
     methods (Test)
         function test_constructor(tc)
+            import mmockito.internal.*;
+            
             i = Invocation(substruct('.', 'asdf', '()', {[5] 'string'}));
             
             im = InvocationMatcher(i);
@@ -19,6 +21,8 @@ classdef InvocationMatcherTest < matlab.unittest.TestCase
         end;
         
         function test_equalInvocations(tc)
+            import mmockito.internal.*;
+            
             inv = Invocation(substruct('.', 'asdf', '()', {[5]}));
             inv2 = Invocation(substruct('.', 'asdf', '()', {[5]}));
             
@@ -31,6 +35,8 @@ classdef InvocationMatcherTest < matlab.unittest.TestCase
         end;
         
         function test_notEqualInvocations(tc)
+            import mmockito.internal.*;
+            
             inv = Invocation(substruct('.', 'asdf', '()', {[5]}));
             inv2 = Invocation(substruct('.', 'asdf', '()', {[5] [6]}));
             inv3 = Invocation(substruct('.', 'asdf', '()', {[4]}));
@@ -44,6 +50,8 @@ classdef InvocationMatcherTest < matlab.unittest.TestCase
         end;
         
         function test_differentMethodNames(tc)
+            import mmockito.internal.*;
+            
             i = Invocation(substruct('.', 'asdf', '()', {[5]}));
             i2 = Invocation(substruct('.', 'fdsa', '()', {[5]}));
             
@@ -54,6 +62,8 @@ classdef InvocationMatcherTest < matlab.unittest.TestCase
             
         
         function test_IsGreaterThanMatcher(tc)
+            import mmockito.internal.*;
+            
             import matlab.unittest.constraints.IsGreaterThan;
 
             i = Invocation(substruct('.', 'asdf', '()', {ArgThat(IsGreaterThan(5))}));
@@ -69,6 +79,7 @@ classdef InvocationMatcherTest < matlab.unittest.TestCase
         end;
         
         function test_ContainsSubstringMatcher(tc)
+            import mmockito.internal.*;
             import matlab.unittest.constraints.ContainsSubstring;
 
             i = Invocation(substruct('.', 'asdf', '()', {ArgThat(ContainsSubstring('str'))}));
@@ -84,6 +95,7 @@ classdef InvocationMatcherTest < matlab.unittest.TestCase
         end;        
         
         function test_matcherNonMatcher(tc)
+            import mmockito.internal.*;
             import matlab.unittest.constraints.IsEmpty;
             
             i = Invocation(substruct('.', 'asdf', '()', {ArgThat(IsEmpty) 5}));
