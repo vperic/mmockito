@@ -80,6 +80,17 @@ classdef StubbingTest < matlab.unittest.TestCase
             tc.assertEqual(m.asdf(13, 15), 'a double');
             tc.assertEqual(m.asdf('s', 10), 'a char10');
         end;
+        
+        function test_overlappingCalls(tc)
+            m = Mock();
+            m.when.asdf(5).thenReturn('good');
+            m.when.asdf(Any(?double)).thenReturn('not implemented');
+            m.when.asdf(Any()).thenReturn('bad input');
+            
+            tc.assertEqual(m.asdf(5), 'good');
+            tc.assertEqual(m.asdf(666), 'not implemented');
+            tc.assertEqual(m.asdf('str'), 'bad input');
+        end;
     end
     
 end
