@@ -38,6 +38,7 @@ classdef Mock < handle
                         if obj.mockery{i,3} > 0 && ...
                            obj.mockery{i,1}.matches(Invocation(S(1:2)))
                             res = obj.mockery{i,2}{1};
+                            obj.mockery{i,3} = obj.mockery{i,3} - 1;
                             if isa(res, 'MException')
                                 throw(res);
                             else
@@ -62,26 +63,34 @@ classdef Mock < handle
 
             invmatcher = InvocationMatcher(Invocation(S(1:2)));
 
-            if strcmp(S(3).subs, 'thenPass')
-                mockedValue = {true};
-            elseif strcmp(S(3).subs, 'thenReturn')
-                mockedValue = S(4).subs;
-            elseif strcmp(S(3).subs, 'thenThrow')
-                if ~isa(S(4).subs{1}, 'MException')
+            % use index to handle multiple thenReturn statements
+            ind = 3;
+            while ind <= length(S)
+                if strcmp(S(ind).subs, 'thenPass')
+                    mockedValue = {true};
+                elseif strcmp(S(ind).subs, 'thenReturn')
+                    mockedValue = S(ind+1).subs;
+                elseif strcmp(S(ind).subs, 'thenThrow')
+                    if ~isa(S(ind+1).subs{1}, 'MException')
+                        ME = MException('mmockito:illegalCall', ...
+                        'Must use a MException object as argument to thenThrow.');
+                        throw(ME);
+                    end;
+                    mockedValue = S(ind+1).subs;
+                else
                     ME = MException('mmockito:illegalCall', ...
-                    'Must use a MException object as argument to thenThrow.');
+                    'After defining a function, must use either thenReturn, thenPass or thenThrow.');
                     throw(ME);
                 end;
-                mockedValue = S(4).subs;
-            else
-                ME = MException('mmockito:illegalCall', ...
-                'After defining a function, must use either thenReturn, thenPass or thenThrow.');
-                throw(ME);
-            end;
 
-            self.mockeryLength = self.mockeryLength + 1;
-            self.mockery{self.mockeryLength, 1} = invmatcher;
-            self.mockery{self.mockeryLength, 2} = mockedValue;
+                self.mockeryLength = self.mockeryLength + 1;
+                self.mockery{self.mockeryLength, 1} = invmatcher;
+                self.mockery{self.mockeryLength, 2} = mockedValue;
+                self.mockery{self.mockeryLength, 3} = 1;
+                ind = ind + 2;
+            end;
+            
+            % the last result should be callable forever
             self.mockery{self.mockeryLength, 3} = inf;
         end;
             

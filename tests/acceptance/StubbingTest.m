@@ -91,6 +91,16 @@ classdef StubbingTest < matlab.unittest.TestCase
             tc.assertEqual(m.asdf(666), 'not implemented');
             tc.assertEqual(m.asdf('str'), 'bad input');
         end;
+        
+        function test_manyReturns(tc)
+            m = Mock();
+            m.when.asdf(1).thenReturn(1).thenReturn(2).thenReturn(3);
+            
+            tc.assertEqual(m.asdf(1), 1);
+            tc.assertEqual(m.asdf(1), 2);
+            tc.assertEqual(m.asdf(1), 3);
+            tc.assertEqual(m.asdf(1), 3);
+        end;
     end
     
 end
