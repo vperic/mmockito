@@ -24,34 +24,7 @@ classdef Mock < handle
             end;
 
             if strcmp(S(1).subs, 'when')
-                % substruct('.','when',
-                %           '.','asdf',
-                %           '()',{[5]},
-                %           '.', 'thenReturn',
-                %           '()', {[6]})
-                invmatcher = InvocationMatcher(Invocation(S(2:3)));
-
-                if strcmp(S(4).subs, 'thenPass')
-                    mockedValue = {true};
-                elseif strcmp(S(4).subs, 'thenReturn')
-                    mockedValue = S(5).subs;
-                elseif strcmp(S(4).subs, 'thenThrow')
-                    if ~isa(S(5).subs{1}, 'MException')
-                        ME = MException('mmockito:illegalCall', ...
-                        'Must use a MException object as argument to thenThrow.');
-                        throw(ME);
-                    end;
-                    mockedValue = S(5).subs;
-                else
-                    ME = MException('mmockito:illegalCall', ...
-                    'After defining a function, must use either thenReturn, thenPass or thenThrow.');
-                    throw(ME);
-                end;
-
-                obj.mockeryLength = obj.mockeryLength + 1;
-                obj.mockery{obj.mockeryLength, 1} = invmatcher;
-                obj.mockery{obj.mockeryLength, 2} = mockedValue;
-                
+                obj.when(S(2:end));
             elseif strcmp(S(1).subs, 'verify')
                 % TODO: implement this
             else
@@ -72,6 +45,39 @@ classdef Mock < handle
                 answer = builtin('subsref', obj, S);
             end;
         end;
+        
+        function when(self, S)
+            % substruct('.','when',
+            %           '.','asdf',
+            %           '()',{[5]},
+            %           '.', 'thenReturn',
+            %           '()', {[6]})
+            import mmockito.internal.*;
+
+            invmatcher = InvocationMatcher(Invocation(S(1:2)));
+
+            if strcmp(S(3).subs, 'thenPass')
+                mockedValue = {true};
+            elseif strcmp(S(3).subs, 'thenReturn')
+                mockedValue = S(4).subs;
+            elseif strcmp(S(3).subs, 'thenThrow')
+                if ~isa(S(4).subs{1}, 'MException')
+                    ME = MException('mmockito:illegalCall', ...
+                    'Must use a MException object as argument to thenThrow.');
+                    throw(ME);
+                end;
+                mockedValue = S(4).subs;
+            else
+                ME = MException('mmockito:illegalCall', ...
+                'After defining a function, must use either thenReturn, thenPass or thenThrow.');
+                throw(ME);
+            end;
+
+            self.mockeryLength = self.mockeryLength + 1;
+            self.mockery{self.mockeryLength, 1} = invmatcher;
+            self.mockery{self.mockeryLength, 2} = mockedValue;  
+        end;
+            
     end
     
 end
