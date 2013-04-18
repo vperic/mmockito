@@ -47,7 +47,27 @@ classdef MatchersTest < matlab.unittest.TestCase
             tc.assertFalse(b.satisfiedBy('str'));
             tc.assertFalse(b.satisfiedBy(?logical));
         end;
+        
+        function test_NumberBetween_constructor(tc)
+            import mmockito.matchers.*;
             
+            NumberBetween(5,15);
+            NumberBetween(-inf, 4);
+            NumberBetween(0, intmax('uint16'));
+            
+            tc.assertError(@() NumberBetween(5, 'str'), 'mmockito:illegalMatcher');
+        end;
+        
+        function test_NumberBetween_satisfiedBy(tc)
+            import mmockito.matchers.*;
+            
+            m = NumberBetween(3.5, intmax);
+            
+            tc.assertTrue(m.satisfiedBy(4));
+            tc.assertTrue(m.satisfiedBy(5.72));
+            tc.assertFalse(m.satisfiedBy(1));
+            tc.assertFalse(m.satisfiedBy(1e100));
+        end;
     end
     
 end
