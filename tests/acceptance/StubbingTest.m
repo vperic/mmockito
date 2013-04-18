@@ -101,6 +101,26 @@ classdef StubbingTest < matlab.unittest.TestCase
             tc.assertEqual(m.asdf(1), 3);
             tc.assertEqual(m.asdf(1), 3);
         end;
+        
+        function test_thenReturn_times(tc)
+            m = Mock();
+            m.when.asdf(5).thenReturn('fine').times(2).thenReturn('bad!');
+            
+            tc.assertEqual(m.asdf(5), 'fine');
+            tc.assertEqual(m.asdf(5), 'fine');
+            tc.assertEqual(m.asdf(5), 'bad!');
+            tc.assertEqual(m.asdf(5), 'bad!');
+        end;
+        
+        function test_thenReturns_endsWithTimes(tc)
+            m = Mock();
+            m.when.asdf(5).thenReturn('ok').times(2);
+            
+            tc.assertEqual(m.asdf(5), 'ok');
+            tc.assertEqual(m.asdf(5), 'ok');
+            tc.assertError(@() m.asdf(5), ?MException);
+        end;
+
     end
     
 end

@@ -65,6 +65,9 @@ classdef Mock < handle
 
             % use index to handle multiple thenReturn statements
             ind = 3;
+            % lastTimes is true if the last keyword was "times" -- it means
+            % we shouldn't mock infinitely, only the given number of times
+            lastTimes = false;
             while ind <= length(S)
                 if strcmp(S(ind).subs, 'thenPass')
                     mockedValue = {true};
@@ -83,15 +86,27 @@ classdef Mock < handle
                     throw(ME);
                 end;
 
+                ind = ind + 2;
+                timesMocked = 1;
+                lastTimes = false;
+                % check for the "times" keyword
+                if ind <= length(S) && strcmp(S(ind).subs, 'times')
+                    timesMocked = S(ind+1).subs{1};
+                    ind = ind + 2;
+                    lastTimes = true;
+                end;
+
                 self.mockeryLength = self.mockeryLength + 1;
                 self.mockery{self.mockeryLength, 1} = invmatcher;
                 self.mockery{self.mockeryLength, 2} = mockedValue;
-                self.mockery{self.mockeryLength, 3} = 1;
-                ind = ind + 2;
+                self.mockery{self.mockeryLength, 3} = timesMocked;
             end;
             
-            % the last result should be callable forever
-            self.mockery{self.mockeryLength, 3} = inf;
+            % the last result should be callable forever unless the keyword
+            % chain ended with "times"
+            if ~lastTimes
+                self.mockery{self.mockeryLength, 3} = inf;
+            end;
         end;
             
     end
