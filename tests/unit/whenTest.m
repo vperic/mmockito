@@ -27,7 +27,7 @@ classdef whenTest < matlab.unittest.TestCase
     
     methods (Test)
         function test_noArg_returnSuccess(testCase)
-            m = mock();
+            m = Mock();
             m.when.aFunc().thenPass();
             
             testCase.assertTrue(m.aFunc());
@@ -36,7 +36,7 @@ classdef whenTest < matlab.unittest.TestCase
         %%% Single argument -> returnSuccess
         
         function test_numArg_returnSuccess(testCase)
-            m = mock();
+            m = Mock();
             arg = 2.5;
             m.when.aFunc(arg).thenPass();
             
@@ -44,7 +44,7 @@ classdef whenTest < matlab.unittest.TestCase
         end;
         
         function test_charArg_returnSuccess(testCase)
-            m = mock();
+            m = Mock();
             arg = 'arg';
             m.when.aFunc(arg).thenPass();
             
@@ -52,7 +52,7 @@ classdef whenTest < matlab.unittest.TestCase
         end;
         
         function test_structArg_returnSuccess(testCase)
-            m = mock();
+            m = Mock();
             arg = struct('a', 5, 'b', 6);
             m.when.aFunc(arg).thenPass();
             
@@ -60,7 +60,7 @@ classdef whenTest < matlab.unittest.TestCase
         end;
         
         function test_cellArg_returnSuccess(testCase)
-            m = mock();
+            m = Mock();
             arg = {5};
             m.when.aFunc(arg).thenPass();
             
@@ -73,7 +73,7 @@ classdef whenTest < matlab.unittest.TestCase
         % with strings
         
         function test_numArg_returnChar(testCase)
-            m = mock();
+            m = Mock();
             arg = 2.5;
             res = 'result';
             m.when.aFunc(arg).thenReturn(res);
@@ -82,7 +82,7 @@ classdef whenTest < matlab.unittest.TestCase
         end;
         
         function test_charArg_returnChar(testCase)
-            m = mock();
+            m = Mock();
             arg = 'arg';
             res = 'result';
             m.when.aFunc(arg).thenReturn(res);
@@ -91,7 +91,7 @@ classdef whenTest < matlab.unittest.TestCase
         end;        
         
         function test_structArg_returnChar(testCase)
-            m = mock();
+            m = Mock();
             arg = struct('a', 5, 'b', 6);
             res = 'result';
             m.when.aFunc(arg).thenReturn(res);
@@ -100,7 +100,7 @@ classdef whenTest < matlab.unittest.TestCase
         end;
         
         function test_cellArg_returnChar(testCase)
-            m = mock();
+            m = Mock();
             arg = {2};
             res = 'result';
             m.when.aFunc(arg).thenReturn(res);
@@ -111,7 +111,7 @@ classdef whenTest < matlab.unittest.TestCase
         % Cells are trickier, test them separately.
         
         function test_numArg_returnCell(testCase)
-            m = mock();
+            m = Mock();
             arg = 2.5;
             res = {'result cell'};
             m.when.aFunc(arg).thenReturn(res);
@@ -120,7 +120,7 @@ classdef whenTest < matlab.unittest.TestCase
         end;        
         
         function test_charArg_returnCell(testCase)
-            m = mock();
+            m = Mock();
             arg = 'arg';
             res = {'result cell'};
             m.when.aFunc(arg).thenReturn(res);
@@ -129,7 +129,7 @@ classdef whenTest < matlab.unittest.TestCase
         end;        
         
         function test_structArg_returnCell(testCase)
-            m = mock();
+            m = Mock();
             arg = struct('a', 5, 'b', 6);
             res = {'result cell'};
             m.when.aFunc(arg).thenReturn(res);
@@ -138,7 +138,7 @@ classdef whenTest < matlab.unittest.TestCase
         end;
         
         function test_cellArg_returnCell(testCase)
-            m = mock();
+            m = Mock();
             arg = {2};
             res = {'result cell'};
             m.when.aFunc(arg).thenReturn(res);
@@ -151,7 +151,7 @@ classdef whenTest < matlab.unittest.TestCase
         % Only test for string results.
         
         function test_numnumArg_returnChar(testCase)
-            m = mock();
+            m = Mock();
             arg1 = 2.5;
             arg2 = 3;
             res = 'result';
@@ -161,7 +161,7 @@ classdef whenTest < matlab.unittest.TestCase
         end;
         
         function test_numcharArg_returnChar(testCase)
-            m = mock();
+            m = Mock();
             arg1 = 2.5;
             arg2 = 'arg';
             res = 'result';
@@ -171,7 +171,7 @@ classdef whenTest < matlab.unittest.TestCase
         end;        
         
         function test_numstructArg_returnChar(testCase)
-            m = mock();
+            m = Mock();
             arg1 = 2.5;
             arg2 = struct('a', 5, 'b', 6);
             res = 'result';
@@ -181,7 +181,7 @@ classdef whenTest < matlab.unittest.TestCase
         end;        
         
         function test_numcellArg_returnChar(testCase)
-            m = mock();
+            m = Mock();
             arg1 = 2.5;
             arg2 = {3};
             res = 'result';
@@ -191,7 +191,7 @@ classdef whenTest < matlab.unittest.TestCase
         end;        
         
         function test_charcharArg_returnChar(testCase)
-            m = mock();
+            m = Mock();
             arg1 = '2b';
             arg2 = '333';
             res = 'result';
@@ -201,7 +201,7 @@ classdef whenTest < matlab.unittest.TestCase
         end;        
         
         function test_charstructArg_returnChar(testCase)
-            m = mock();
+            m = Mock();
             arg1 = '2';
             arg2 = struct('a', 3);
             res = 'result';
@@ -211,7 +211,7 @@ classdef whenTest < matlab.unittest.TestCase
         end;                
         
         function test_charcellArg_returnChar(testCase)
-            m = mock();
+            m = Mock();
             arg1 = '2';
             arg2 = {'3'};
             res = 'result';
@@ -221,7 +221,7 @@ classdef whenTest < matlab.unittest.TestCase
         end;          
         
         function test_structstructArg_returnChar(testCase)
-            m = mock();
+            m = Mock();
             arg1 = struct('a','2');
             arg2 = struct('b','3');
             res = 'result';
@@ -231,7 +231,7 @@ classdef whenTest < matlab.unittest.TestCase
         end;                
         
         function test_structcellArg_returnChar(testCase)
-            m = mock();
+            m = Mock();
             arg1 = struct('a','2');
             arg2 = {'a', '3'};
             res = 'result';
@@ -241,7 +241,7 @@ classdef whenTest < matlab.unittest.TestCase
         end;        
 
         function test_cellcellArg_returnChar(testCase)
-            m = mock();
+            m = Mock();
             arg1 = {'a','2'};
             arg2 = {'b','3'};
             res = 'result';
@@ -254,7 +254,7 @@ classdef whenTest < matlab.unittest.TestCase
         % XXX: move this to a separate class?
         
         function test_multipleCalls(testCase)
-            m = mock();
+            m = Mock();
             arg1 = 2.5;
             arg2 = 17;
             res1 = 'good';
@@ -269,7 +269,7 @@ classdef whenTest < matlab.unittest.TestCase
         %%% Test that not just the first arguments are used
         
         function test_sameFirstArgument_differentReturns(tc)
-            m = mock();
+            m = Mock();
             arg1 = 3;
             arg2 = 'joy';
             arg3 = 'radost';
@@ -280,7 +280,7 @@ classdef whenTest < matlab.unittest.TestCase
         end;
         
         function test_sameFirstSecondArguments_differentReturns(tc)
-            m = mock();
+            m = Mock();
             arg1 = 2;
             arg2 = 3;
             arg31 = 4;

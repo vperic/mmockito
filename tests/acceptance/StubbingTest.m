@@ -7,14 +7,14 @@ classdef StubbingTest < matlab.unittest.TestCase
     methods (Test)
         function test_stubbedMethodPasses_whenCalledWithoutArguments(testCase)
             % Prepare fixture
-            m = mock();
+            m = Mock();
             m.when.stubbedMethod().thenPass();
             % Test the SUT
             m.stubbedMethod();
         end
         
         function test_stubbedMethodPasses_whenCalledWithArguments(testCase)
-            m = mock();
+            m = Mock();
             arg1 = 'arg1';
             arg2 = 10;
             m.when.stubbedMethod(arg1, arg2).thenPass();
@@ -23,7 +23,7 @@ classdef StubbingTest < matlab.unittest.TestCase
         end;
         
         function test_stubbedMethodReturns_whenCalledWithoutArguments(testCase)
-            m = mock();
+            m = Mock();
             res = 'result';
             m.when.stubbedMethod().thenReturn(res);
             
@@ -31,7 +31,7 @@ classdef StubbingTest < matlab.unittest.TestCase
         end;
         
         function test_stubbedMethodReturns_whenCalledWithArguments(testCase)
-            m = mock();
+            m = Mock();
             arg1 = 2;
             arg2 = true;
             res = 42;
@@ -41,7 +41,7 @@ classdef StubbingTest < matlab.unittest.TestCase
         end;
         
         function test_stubbedMethodReturns_whenCalledWithVaryingArguments(testCase)
-            m = mock();
+            m = Mock();
             arg1 = 'arg1';
             arg2 = 2;
             res1 = 10;
@@ -53,7 +53,7 @@ classdef StubbingTest < matlab.unittest.TestCase
         end;
         
         function test_stubbedMethodThrowsException(testCase)
-            m = mock();
+            m = Mock();
             err1 = MException('a:b:c', 'error thrown');
             m.when.stubbedMethod().thenThrow(err1);
             
@@ -63,7 +63,7 @@ classdef StubbingTest < matlab.unittest.TestCase
         function test_stubbingMatchers(tc)
             import matlab.unittest.constraints.*;
 
-            m = mock();
+            m = Mock();
             m.when.asdf(4, ArgThat(HasNaN)).thenReturn('a NaN');
             m.when.asdf(4, ArgThat(IsFinite)).thenReturn('no NaN');
             
@@ -72,7 +72,7 @@ classdef StubbingTest < matlab.unittest.TestCase
         end;
         
         function test_AnyMatcher(tc)
-            m = mock();
+            m = Mock();
             m.when.asdf(Any(?double), Any()).thenReturn('a double');
             m.when.asdf(Any('char'), 10).thenReturn('a char10');
             

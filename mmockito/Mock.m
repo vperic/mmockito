@@ -1,4 +1,4 @@
-classdef mock < handle
+classdef Mock < handle
     %UNTITLED Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -9,11 +9,7 @@ classdef mock < handle
         mockeryLength = 0;
     end
     
-    methods
-        function obj = mock
-            obj;
-        end;
-        
+    methods       
         function answer = subsref(obj, S)
             if S(1).type ~= '.'
                 ME = MException('mmockito:illegalCall', ...
