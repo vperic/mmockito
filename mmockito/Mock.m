@@ -2,7 +2,10 @@ classdef Mock < handle
     %UNTITLED Summary of this class goes here
     %   Detailed explanation goes here
     
-    % General design: mockery is a cell array of pairs (Invocation, result)
+    % General design: mockery is a cell array of tuples:
+    %       (Invocation, result, numberOfCalls)
+    % where numberOfCalls is the amount of times a given call can be
+    % matched (accepting inf for infinite).
     
     properties
         mockery = {};
@@ -32,12 +35,15 @@ classdef Mock < handle
                     % otherwise we get index exceeded errors due to the
                     % Invocation(S(1:2)) call
                     for i=1:obj.mockeryLength
-                        if obj.mockery{i,1}.matches(Invocation(S(1:2)))
-                            if isa(obj.mockery{i,2}{1}, 'MException')
-                                throw(obj.mockery{i,2}{1});
+                        if obj.mockery{i,3} > 0 && ...
+                           obj.mockery{i,1}.matches(Invocation(S(1:2)))
+                            res = obj.mockery{i,2}{1};
+                            if isa(res, 'MException')
+                                throw(res);
+                            else
+                                answer = res;
+                                return;
                             end;
-                            answer = obj.mockery{i,2}{1};
-                            return;
                         end;
                     end;
                 end;
@@ -75,7 +81,8 @@ classdef Mock < handle
 
             self.mockeryLength = self.mockeryLength + 1;
             self.mockery{self.mockeryLength, 1} = invmatcher;
-            self.mockery{self.mockeryLength, 2} = mockedValue;  
+            self.mockery{self.mockeryLength, 2} = mockedValue;
+            self.mockery{self.mockeryLength, 3} = inf;
         end;
             
     end
