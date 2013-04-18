@@ -68,6 +68,24 @@ classdef MatchersTest < matlab.unittest.TestCase
             tc.assertFalse(m.satisfiedBy(1));
             tc.assertFalse(m.satisfiedBy(1e100));
         end;
+        
+        function test_StringContaining_constructor(tc)
+            import mmockito.matchers.*;
+            
+            StringContaining('asdf');
+            StringContaining('T');
+            
+            tc.assertError(@() StringContaining(5), 'mmockito:illegalMatcher');
+        end;
+        
+        function test_StringContaining_satisfiedBy(tc)
+            import mmockito.matchers.*;
+            
+            s = StringContaining('asD');
+            
+            tc.assertTrue(s.satisfiedBy('asDfd'));
+            tc.assertFalse(s.satisfiedBy('asd'));
+        end;
     end
     
 end
