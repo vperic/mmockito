@@ -5,120 +5,170 @@ classdef StubbingTest < matlab.unittest.TestCase
     end
     
     methods (Test)
-        function test_stubbedMethodPasses_whenCalledWithoutArguments(testCase)
-            % Prepare fixture
+        function stubbedMethod_passes_whenCalledWithoutArguments(testCase)
+            % Given
             m = Mock();
-            m.when.stubbedMethod().thenPass();
-            % Test the SUT
-            m.stubbedMethod();
+            % When
+            m.when.stub().thenPass();
+            % Then
+            m.stub();
         end
         
-        function test_stubbedMethodPasses_whenCalledWithArguments(testCase)
+        function stubbedMethod_passes_whenCalledWithArguments(testCase)
+            % Given
             m = Mock();
             arg1 = 'arg1';
             arg2 = 10;
-            m.when.stubbedMethod(arg1, arg2).thenPass();
-            
-            m.stubbedMethod(arg1, arg2);
+            % When
+            m.when.stub(arg1, arg2).thenPass();
+            % Then            
+            m.stub(arg1, arg2);
         end;
         
-        function test_stubbedMethodReturns_whenCalledWithoutArguments(testCase)
+        function stubbedMethod_returns_whenCalledWithoutArguments(testCase)
+            % Given
             m = Mock();
             res = 'result';
-            m.when.stubbedMethod().thenReturn(res);
-            
-            testCase.assertEqual(m.stubbedMethod(), res);
+            % When
+            m.when.stub().thenReturn(res);
+            % Then            
+            testCase.assertEqual(m.stub(), res);
         end;
         
-        function test_stubbedMethodReturns_whenCalledWithArguments(testCase)
+        function stubbedMethod_returns_whenCalledWithArgs(testCase)
+            % Given
             m = Mock();
             arg1 = 2;
             arg2 = true;
             res = 42;
-            m.when.stubbedMethod(arg1, arg2).thenReturn(res);
-            
-            testCase.assertEqual(m.stubbedMethod(arg1, arg2), res);
+            % When
+            m.when.stub(arg1, arg2).thenReturn(res);
+            % Then            
+            testCase.assertEqual(m.stub(arg1, arg2), res);
         end;
         
-        function test_stubbedMethodReturns_whenCalledWithVaryingArguments(testCase)
+        function stubbedMethod_returnsDifferentResults_forDifferentArgs(testCase)
+            % Given
             m = Mock();
             arg1 = 'arg1';
             arg2 = 2;
             res1 = 10;
             res2 = 20;
-            m.when.stubbedMethod(arg1).thenReturn(res1);
-            m.when.stubbedMethod(arg1, arg2).thenReturn(res2);
-            
-            testCase.assertNotEqual(m.stubbedMethod(arg1), m.stubbedMethod(arg1, arg2));
+            % When
+            m.when.stub(arg1).thenReturn(res1);
+            m.when.stub(arg1, arg2).thenReturn(res2);
+            % Then            
+            testCase.assertNotEqual(m.stub(arg1), m.stub(arg1, arg2));
         end;
         
-        function test_stubbedMethodThrowsException(testCase)
+        function stubbedMethod_throwsException(testCase)
+            % Given
             m = Mock();
             err1 = MException('a:b:c', 'error thrown');
-            m.when.stubbedMethod().thenThrow(err1);
-            
-            testCase.assertError(@() m.stubbedMethod(), 'a:b:c');
+            % When
+            m.when.stub().thenThrow(err1);
+            % Then
+            testCase.assertError(@() m.stub(), 'a:b:c');
         end;
-        
-        function test_stubbingMatchers(tc)
-            import matlab.unittest.constraints.*;
 
+		function stubbedMethod_withArgThatMatcher_whenItMatches(testCase)
+            import matlab.unittest.constraints.*;
+		    % Given
             m = Mock();
-            m.when.asdf(4, ArgThat(HasNaN)).thenReturn('a NaN');
-            m.when.asdf(4, ArgThat(IsFinite)).thenReturn('no NaN');
-            
-            tc.assertEqual(m.asdf(4, [5 6 NaN]), 'a NaN');
-            tc.assertEqual(m.asdf(4, [5 6 7]), 'no NaN');
+            % When
+            m.when.stub(4, ArgThat(HasNaN)).thenReturn('a NaN');
+            m.when.stub(4, ArgThat(IsFinite)).thenReturn('no NaN');
+            % Then
+            testCase.assertEqual(m.stub(4, [5 6 7]), 'no NaN');
+            testCase.assertEqual(m.stub(4, [5 6 NaN]), 'a NaN');
         end;
         
-        function test_AnyMatcher(tc)
+		function stubbedMethod_withArgThatMatcher_whenItDoesNotMatch(testCase)
+            import matlab.unittest.constraints.*;
+		    % Given
             m = Mock();
-            m.when.asdf(Any(?double), Any()).thenReturn('a double');
-            m.when.asdf(Any('char'), 10).thenReturn('a char10');
-            
-            tc.assertEqual(m.asdf(5, 'str'), 'a double');
-            tc.assertEqual(m.asdf(13, 15), 'a double');
-            tc.assertEqual(m.asdf('s', 10), 'a char10');
+            % When
+            m.when.stub(4, ArgThat(HasNaN)).thenReturn('a NaN');
+            m.when.stub(4, ArgThat(IsFinite)).thenReturn('no NaN');
+            % Then
+            testCase.assertError(@() m.stub(), ?MException);
+            testCase.assertError(@() m.stub(4), ?MException);
+            testCase.assertError(@() m.stub(4,10,'too long arg list'), ?MException);
+            testCase.assertError(@() m.stub(5, [NaN]), ?MException);
         end;
         
-        function test_overlappingCalls(tc)
+        function stubbedMethod_withAnyMatcher_whenItMatches(testCase)
+            % Given
             m = Mock();
-            m.when.asdf(5).thenReturn('good');
-            m.when.asdf(Any(?double)).thenReturn('not implemented');
-            m.when.asdf(Any()).thenReturn('bad input');
-            
-            tc.assertEqual(m.asdf(5), 'good');
-            tc.assertEqual(m.asdf(666), 'not implemented');
-            tc.assertEqual(m.asdf('str'), 'bad input');
+            % When
+            m.when.stub(Any(?double), Any()).thenReturn('a double');
+            m.when.stub(Any('char'), 10).thenReturn('a char10');
+            %
+            testCase.assertEqual(m.stub(5, 'str'), 'a double');
+            testCase.assertEqual(m.stub(13, 15), 'a double');
+            testCase.assertEqual(m.stub('s', 10), 'a char10');
         end;
         
-        function test_manyReturns(tc)
+        function stubbedMethod_withAnyMatcher_whenItDoesNotMatch(testCase)
+            % Given
             m = Mock();
-            m.when.asdf(1).thenReturn(1).thenReturn(2).thenReturn(3);
-            
-            tc.assertEqual(m.asdf(1), 1);
-            tc.assertEqual(m.asdf(1), 2);
-            tc.assertEqual(m.asdf(1), 3);
-            tc.assertEqual(m.asdf(1), 3);
+            % When
+            m.when.stub(Any(?double), Any()).thenReturn('a double');
+            m.when.stub(Any('char'), 10).thenReturn('a char10');
+            % Then
+            testCase.assertError(@() m.stub(), ?MException);
+            testCase.assertError(@() m.stub(4), ?MException);
+            testCase.assertError(@() m.stub(4,10,'too long arg list'), ?MException);
+            testCase.assertError(@() m.stub(5, [NaN]), ?MException);
         end;
         
-        function test_thenReturn_times(tc)
+        function stubbedMethod_returnsFirstMatch_forOverlappingCalls(testCase)
+            % Given
             m = Mock();
-            m.when.asdf(5).thenReturn('fine').times(2).thenReturn('bad!');
-            
-            tc.assertEqual(m.asdf(5), 'fine');
-            tc.assertEqual(m.asdf(5), 'fine');
-            tc.assertEqual(m.asdf(5), 'bad!');
-            tc.assertEqual(m.asdf(5), 'bad!');
+            % When
+            m.when.stub(5).thenReturn('good');
+            m.when.stub(Any(?double)).thenReturn('not implemented');
+            m.when.stub(Any()).thenReturn('bad input');
+            % Then
+            testCase.assertEqual(m.stub(5), 'good');
+            testCase.assertEqual(m.stub(666), 'not implemented');
+            testCase.assertEqual(m.stub('str'), 'bad input');
         end;
         
-        function test_thenReturns_endsWithTimes(tc)
+        function stubbedMethod_returnsSequenceOfResults(testCase)
+            % Given
             m = Mock();
-            m.when.asdf(5).thenReturn('ok').times(2);
-            
-            tc.assertEqual(m.asdf(5), 'ok');
-            tc.assertEqual(m.asdf(5), 'ok');
-            tc.assertError(@() m.asdf(5), ?MException);
+            % When
+            m.when.stub(1).thenReturn(1).thenReturn(2).thenReturn(3);
+            % Then
+            testCase.assertEqual(m.stub(1), 1);
+            testCase.assertEqual(m.stub(1), 2);
+            testCase.assertEqual(m.stub(1), 3);
+            testCase.assertEqual(m.stub(1), 3);
+            testCase.assertEqual(m.stub(1), 3);
+        end;
+        
+        function stubbedMethod_returnsSequence_usingTimes(testCase)
+            % Given
+            m = Mock();
+            % When
+            m.when.stub(5).thenReturn('fine').times(2).thenReturn('bad!');
+            % Then
+            testCase.assertEqual(m.stub(5), 'fine');
+            testCase.assertEqual(m.stub(5), 'fine');
+            testCase.assertEqual(m.stub(5), 'bad!');
+            testCase.assertEqual(m.stub(5), 'bad!');
+        end;
+        
+        function stubbedMethod_eventuallyThrowsEx_whenThenReturnEndsWithTimes(testCase)
+            % Given
+            m = Mock();
+            % When
+            m.when.stub(5).thenReturn('ok').times(2);
+            % Then
+            testCase.assertEqual(m.stub(5), 'ok');
+            testCase.assertEqual(m.stub(5), 'ok');
+            testCase.assertError(@() m.stub(5), ?MException);
         end;
 
     end
