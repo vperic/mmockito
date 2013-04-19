@@ -5,7 +5,7 @@ classdef VerificationsTest < matlab.unittest.TestCase
     end
     
     methods (Test)
-        function simpleVerification(testCase)
+        function tolerant_simpleVerification(testCase)
             % Given
             m = Mock('tolerant');
             % When
