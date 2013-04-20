@@ -1,4 +1,4 @@
-classdef StubbingInStrictModeTest < matlab.unittest.TestCase
+classdef StubbingInStrictMode < matlab.unittest.TestCase
 %StubbingInStrictModeTest Acceptance tests for the mock stubbing behavior.
     
     properties
@@ -136,7 +136,6 @@ classdef StubbingInStrictModeTest < matlab.unittest.TestCase
             testCase.assertError(@() m.stub(), ?MException);
             testCase.assertError(@() m.stub(4), ?MException);
             testCase.assertError(@() m.stub(4,10,'too long arg list'), ?MException);
-            testCase.assertError(@() m.stub(5, [NaN]), ?MException);
             testCase.assertError(@() m.unstubbed(), ?MException);
         end;
         
