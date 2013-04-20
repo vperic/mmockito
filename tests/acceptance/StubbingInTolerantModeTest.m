@@ -26,7 +26,7 @@ classdef StubbingInTolerantModeTest < matlab.unittest.TestCase
             m.when.stub().thenPass();
             % Then
             m.stub();
-            testCase.assertEqual(@() m.unstubbed(), []);
+            testCase.assertEqual(m.unstubbed(), []);
         end
         
         function stubbedMethod_passes_whenCalledWithArguments(testCase)
@@ -38,7 +38,7 @@ classdef StubbingInTolerantModeTest < matlab.unittest.TestCase
             m.when.stub(arg1, arg2).thenPass();
             % Then            
             m.stub(arg1, arg2);
-            testCase.assertEqual(@() m.unstubbed(), []);
+            testCase.assertEqual(m.unstubbed(), []);
         end;
         
         function stubbedMethod_returns_whenCalledWithoutArguments(testCase)
@@ -49,7 +49,7 @@ classdef StubbingInTolerantModeTest < matlab.unittest.TestCase
             m.when.stub().thenReturn(res);
             % Then            
             testCase.assertEqual(m.stub(), res);
-            testCase.assertEqual(@() m.unstubbed(), []);
+            testCase.assertEqual(m.unstubbed(), []);
         end;
         
         function stubbedMethod_returns_whenCalledWithArgs(testCase)
@@ -62,7 +62,7 @@ classdef StubbingInTolerantModeTest < matlab.unittest.TestCase
             m.when.stub(arg1, arg2).thenReturn(res);
             % Then            
             testCase.assertEqual(m.stub(arg1, arg2), res);
-            testCase.assertEqual(@() m.unstubbed(), []);
+            testCase.assertEqual(m.unstubbed(), []);
         end;
         
         function stubbedMethod_returnsDifferentResults_forDifferentArgs(testCase)
@@ -77,7 +77,7 @@ classdef StubbingInTolerantModeTest < matlab.unittest.TestCase
             m.when.stub(arg1, arg2).thenReturn(res2);
             % Then            
             testCase.assertNotEqual(m.stub(arg1), m.stub(arg1, arg2));
-            testCase.assertEqual(@() m.unstubbed(), []);
+            testCase.assertEqual(m.unstubbed(), []);
         end;
         
         function stubbedMethod_throwsException(testCase)
@@ -88,7 +88,7 @@ classdef StubbingInTolerantModeTest < matlab.unittest.TestCase
             m.when.stub().thenThrow(err1);
             % Then
             testCase.assertError(@() m.stub(), 'a:b:c');
-            testCase.assertEqual(@() m.unstubbed(), []);
+            testCase.assertEqual(m.unstubbed(), []);
         end;
 
 		function stubbedMethod_withArgThatMatcher_whenItMatches(testCase)
@@ -101,7 +101,7 @@ classdef StubbingInTolerantModeTest < matlab.unittest.TestCase
             % Then
             testCase.assertEqual(m.stub(4, [5 6 7]), 'no NaN');
             testCase.assertEqual(m.stub(4, [5 6 NaN]), 'a NaN');
-            testCase.assertEqual(@() m.unstubbed(), []);
+            testCase.assertEqual(m.unstubbed(), []);
         end;
         
 		function stubbedMethod_withArgThatMatcher_whenItDoesNotMatch(testCase)
@@ -116,7 +116,7 @@ classdef StubbingInTolerantModeTest < matlab.unittest.TestCase
             testCase.assertError(@() m.stub(4), ?MException);
             testCase.assertError(@() m.stub(4,10,'too long arg list'), ?MException);
             testCase.assertError(@() m.stub(5, [NaN]), ?MException);
-            testCase.assertEqual(@() m.unstubbed(), []);
+            testCase.assertEqual(m.unstubbed(), []);
         end;
         
         function stubbedMethod_withAnyMatcher_whenItMatches(testCase)
@@ -129,7 +129,7 @@ classdef StubbingInTolerantModeTest < matlab.unittest.TestCase
             testCase.assertEqual(m.stub(5, 'str'), 'a double');
             testCase.assertEqual(m.stub(13, 15), 'a double');
             testCase.assertEqual(m.stub('s', 10), 'a char10');
-            testCase.assertEqual(@() m.unstubbed(), []);
+            testCase.assertEqual(m.unstubbed(), []);
         end;
         
         function stubbedMethod_withAnyMatcher_whenItDoesNotMatch(testCase)
@@ -143,7 +143,7 @@ classdef StubbingInTolerantModeTest < matlab.unittest.TestCase
             testCase.assertError(@() m.stub(4), ?MException);
             testCase.assertError(@() m.stub(4,10,'too long arg list'), ?MException);
             testCase.assertError(@() m.stub(5, [NaN]), ?MException);
-            testCase.assertEqual(@() m.unstubbed(), []);
+            testCase.assertEqual(m.unstubbed(), []);
         end;
         
         function stubbedMethod_returnsFirstMatch_forOverlappingCalls(testCase)
@@ -157,7 +157,7 @@ classdef StubbingInTolerantModeTest < matlab.unittest.TestCase
             testCase.assertEqual(m.stub(5), 'good');
             testCase.assertEqual(m.stub(666), 'not implemented');
             testCase.assertEqual(m.stub('str'), 'bad input');
-            testCase.assertEqual(@() m.unstubbed(), []);
+            testCase.assertEqual(m.unstubbed(), []);
         end;
         
         function stubbedMethod_returnsSequenceOfResults(testCase)
@@ -171,7 +171,7 @@ classdef StubbingInTolerantModeTest < matlab.unittest.TestCase
             testCase.assertEqual(m.stub(1), 3);
             testCase.assertEqual(m.stub(1), 3);
             testCase.assertEqual(m.stub(1), 3);
-            testCase.assertEqual(@() m.unstubbed(), []);
+            testCase.assertEqual(m.unstubbed(), []);
         end;
         
         function stubbedMethod_returnsSequence_usingTimes(testCase)
@@ -184,7 +184,7 @@ classdef StubbingInTolerantModeTest < matlab.unittest.TestCase
             testCase.assertEqual(m.stub(5), 'fine');
             testCase.assertEqual(m.stub(5), 'bad!');
             testCase.assertEqual(m.stub(5), 'bad!');
-            testCase.assertEqual(@() m.unstubbed(), []);
+            testCase.assertEqual(m.unstubbed(), []);
         end;
         
         function stubbedMethod_eventuallyThrowsEx_whenThenReturnEndsWithTimes(testCase)
@@ -196,7 +196,7 @@ classdef StubbingInTolerantModeTest < matlab.unittest.TestCase
             testCase.assertEqual(m.stub(5), 'ok');
             testCase.assertEqual(m.stub(5), 'ok');
             testCase.assertError(@() m.stub(5), ?MException);
-            testCase.assertEqual(@() m.unstubbed(), []);
+            testCase.assertEqual(m.unstubbed(), []);
         end;
 
         function passes_whenStubbingExistingMethodOfRealClass(testCase)
