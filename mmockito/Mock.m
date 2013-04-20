@@ -10,9 +10,23 @@ classdef Mock < handle
     properties
         mockery = {};
         mockeryLength = 0;
+        
+        strict = false;
     end
     
-    methods       
+    methods
+        function self = Mock(str)
+            if nargin == 0
+                return;
+            end;
+
+            if strcmp(str, 'strict')
+                self.strict = true;
+            elseif strcmp(str, 'tolerant')
+                self.strict = false;
+            end;
+        end;
+
         function varargout = subsref(obj, S)
             import mmockito.internal.*;
 
@@ -49,7 +63,18 @@ classdef Mock < handle
                     end;
                 end;
 
-                varargout{1} = builtin('subsref', obj, S);
+                % if subsref doesn't give us anything, throw an error only
+                % if we are in 'strict' mode
+                try
+                    varargout{1} = builtin('subsref', obj, S);
+                catch ME
+                    if obj.strict
+                        rethrow(ME)
+                    else
+                        % NOTE: we could also just pass silently
+                        varargout{1} = [];
+                    end;
+                end;
             end;
         end;
         
