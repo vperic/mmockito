@@ -112,10 +112,9 @@ classdef StubbingInTolerantModeTest < matlab.unittest.TestCase
             m.when.stub(4, ArgThat(HasNaN)).thenReturn('a NaN');
             m.when.stub(4, ArgThat(IsFinite)).thenReturn('no NaN');
             % Then
-            testCase.assertError(@() m.stub(), ?MException);
-            testCase.assertError(@() m.stub(4), ?MException);
-            testCase.assertError(@() m.stub(4,10,'too long arg list'), ?MException);
-            testCase.assertError(@() m.stub(5, [NaN]), ?MException);
+            testCase.assertEqual(m.stub(), []);
+            testCase.assertEqual(m.stub(4), []);
+            testCase.assertEqual(m.stub(4,10,'too long arg list'), []);
             testCase.assertEqual(m.unstubbed(), []);
         end;
         
@@ -139,10 +138,9 @@ classdef StubbingInTolerantModeTest < matlab.unittest.TestCase
             m.when.stub(Any(?double), Any()).thenReturn('a double');
             m.when.stub(Any('char'), 10).thenReturn('a char10');
             % Then
-            testCase.assertError(@() m.stub(), ?MException);
-            testCase.assertError(@() m.stub(4), ?MException);
-            testCase.assertError(@() m.stub(4,10,'too long arg list'), ?MException);
-            testCase.assertError(@() m.stub(5, [NaN]), ?MException);
+            testCase.assertEqual(m.stub(), []);
+            testCase.assertEqual(m.stub(4), []);
+            testCase.assertEqual(m.stub(4,10,'too long arg list'), []);
             testCase.assertEqual(m.unstubbed(), []);
         end;
         
@@ -195,7 +193,7 @@ classdef StubbingInTolerantModeTest < matlab.unittest.TestCase
             % Then
             testCase.assertEqual(m.stub(5), 'ok');
             testCase.assertEqual(m.stub(5), 'ok');
-            testCase.assertError(@() m.stub(5), ?MException);
+            testCase.assertEqual(m.stub(5), []);
             testCase.assertEqual(m.unstubbed(), []);
         end;
 
