@@ -13,7 +13,7 @@ classdef Mock < handle
     end
     
     methods       
-        function answer = subsref(obj, S)
+        function varargout = subsref(obj, S)
             import mmockito.internal.*;
 
             if S(1).type ~= '.'
@@ -42,14 +42,14 @@ classdef Mock < handle
                             if isa(res, 'MException')
                                 throw(res);
                             else
-                                answer = res;
+                                varargout = obj.mockery{i,2};
                                 return;
                             end;
                         end;
                     end;
                 end;
 
-                answer = builtin('subsref', obj, S);
+                varargout{1} = builtin('subsref', obj, S);
             end;
         end;
         
