@@ -72,7 +72,7 @@ classdef Mock < handle
                         rethrow(ME)
                     else
                         % NOTE: we could also just pass silently
-                        varargout{1} = [];
+                        varargout = cell(1, nargout);
                     end;
                 end;
             end;
