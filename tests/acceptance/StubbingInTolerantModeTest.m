@@ -21,7 +21,7 @@ classdef StubbingInTolerantModeTest < matlab.unittest.TestCase
         
         function stubbedMethod_passes_whenCalledWithoutArguments(testCase)
             % Given
-            m = Mock();
+            m = Mock('tolerant');
             % When
             m.when.stub().thenPass();
             % Then
@@ -31,7 +31,7 @@ classdef StubbingInTolerantModeTest < matlab.unittest.TestCase
         
         function stubbedMethod_passes_whenCalledWithArguments(testCase)
             % Given
-            m = Mock();
+            m = Mock('tolerant');
             arg1 = 'arg1';
             arg2 = 10;
             % When
@@ -43,7 +43,7 @@ classdef StubbingInTolerantModeTest < matlab.unittest.TestCase
         
         function stubbedMethod_returns_whenCalledWithoutArguments(testCase)
             % Given
-            m = Mock();
+            m = Mock('tolerant');
             res = 'result';
             % When
             m.when.stub().thenReturn(res);
@@ -54,7 +54,7 @@ classdef StubbingInTolerantModeTest < matlab.unittest.TestCase
         
         function stubbedMethod_returns_whenCalledWithArgs(testCase)
             % Given
-            m = Mock();
+            m = Mock('tolerant');
             arg1 = 2;
             arg2 = true;
             res = 42;
@@ -67,7 +67,7 @@ classdef StubbingInTolerantModeTest < matlab.unittest.TestCase
         
         function stubbedMethod_returnsDifferentResults_forDifferentArgs(testCase)
             % Given
-            m = Mock();
+            m = Mock('tolerant');
             arg1 = 'arg1';
             arg2 = 2;
             res1 = 10;
@@ -82,7 +82,7 @@ classdef StubbingInTolerantModeTest < matlab.unittest.TestCase
         
         function stubbedMethod_throwsException(testCase)
             % Given
-            m = Mock();
+            m = Mock('tolerant');
             err1 = MException('a:b:c', 'error thrown');
             % When
             m.when.stub().thenThrow(err1);
@@ -94,7 +94,7 @@ classdef StubbingInTolerantModeTest < matlab.unittest.TestCase
 		function stubbedMethod_withArgThatMatcher_whenItMatches(testCase)
             import matlab.unittest.constraints.*;
 		    % Given
-            m = Mock();
+            m = Mock('tolerant');
             % When
             m.when.stub(4, ArgThat(HasNaN)).thenReturn('a NaN');
             m.when.stub(4, ArgThat(IsFinite)).thenReturn('no NaN');
@@ -107,7 +107,7 @@ classdef StubbingInTolerantModeTest < matlab.unittest.TestCase
 		function stubbedMethod_withArgThatMatcher_whenItDoesNotMatch(testCase)
             import matlab.unittest.constraints.*;
 		    % Given
-            m = Mock();
+            m = Mock('tolerant');
             % When
             m.when.stub(4, ArgThat(HasNaN)).thenReturn('a NaN');
             m.when.stub(4, ArgThat(IsFinite)).thenReturn('no NaN');
@@ -120,7 +120,7 @@ classdef StubbingInTolerantModeTest < matlab.unittest.TestCase
         
         function stubbedMethod_withAnyMatcher_whenItMatches(testCase)
             % Given
-            m = Mock();
+            m = Mock('tolerant');
             % When
             m.when.stub(Any(?double), Any()).thenReturn('a double');
             m.when.stub(Any('char'), 10).thenReturn('a char10');
@@ -133,7 +133,7 @@ classdef StubbingInTolerantModeTest < matlab.unittest.TestCase
         
         function stubbedMethod_withAnyMatcher_whenItDoesNotMatch(testCase)
             % Given
-            m = Mock();
+            m = Mock('tolerant');
             % When
             m.when.stub(Any(?double), Any()).thenReturn('a double');
             m.when.stub(Any('char'), 10).thenReturn('a char10');
@@ -146,7 +146,7 @@ classdef StubbingInTolerantModeTest < matlab.unittest.TestCase
         
         function stubbedMethod_returnsFirstMatch_forOverlappingCalls(testCase)
             % Given
-            m = Mock();
+            m = Mock('tolerant');
             % When
             m.when.stub(5).thenReturn('good');
             m.when.stub(Any(?double)).thenReturn('not implemented');
@@ -160,7 +160,7 @@ classdef StubbingInTolerantModeTest < matlab.unittest.TestCase
         
         function stubbedMethod_returnsSequenceOfResults(testCase)
             % Given
-            m = Mock();
+            m = Mock('tolerant');
             % When
             m.when.stub(1).thenReturn(1).thenReturn(2).thenReturn(3);
             % Then
@@ -174,7 +174,7 @@ classdef StubbingInTolerantModeTest < matlab.unittest.TestCase
         
         function stubbedMethod_returnsSequence_usingTimes(testCase)
             % Given
-            m = Mock();
+            m = Mock('tolerant');
             % When
             m.when.stub(5).thenReturn('fine').times(2).thenReturn('bad!');
             % Then
@@ -187,7 +187,7 @@ classdef StubbingInTolerantModeTest < matlab.unittest.TestCase
         
         function stubbedMethod_eventuallyThrowsEx_whenThenReturnEndsWithTimes(testCase)
             % Given
-            m = Mock();
+            m = Mock('tolerant');
             % When
             m.when.stub(5).thenReturn('ok').times(2);
             % Then
@@ -199,14 +199,14 @@ classdef StubbingInTolerantModeTest < matlab.unittest.TestCase
 
         function passes_whenStubbingExistingMethodOfRealClass(testCase)
             % Given
-            m = Mock(RealClass, 'strict');
+            m = Mock(RealClass, 'tolerant');
             % Then
             m.when.get().thenPass();  % This shall just pass
         end
         
         function passes_whenStubbingNonExistingMethodOfRealClass(testCase)
             % Given
-            m = Mock(RealClass, 'strict');
+            m = Mock(RealClass, 'tolerant');
             % Then
             m.when.nonexistent().thenPass();  % This shall pass too.
         end
