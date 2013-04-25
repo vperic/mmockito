@@ -9,6 +9,10 @@ classdef Mock < handle
     %
     % If we are mocking a real object, then realMocked is true and
     % mockedObj is the mocked objects' handle. 
+    %
+    % allInvocations is a cell array of all Invocations on the mock objects
+    % excluding the .when and .verify calls. It is later used in
+    % verification.
     
     properties
         mockery = {};
@@ -18,6 +22,8 @@ classdef Mock < handle
 
         mockedObj;
         realMocked = false;
+
+        allInvocations = {};
     end
     
     methods
@@ -59,14 +65,18 @@ classdef Mock < handle
             if strcmp(S(1).subs, 'when')
                 obj.when(S(2:end));
             elseif strcmp(S(1).subs, 'verify')
-                % TODO: implement this
+                obj.verify(S(2:end));
             else
                 if length(S) > 1
                     % otherwise we get index exceeded errors due to the
                     % Invocation(S(1:2)) call
+
+                    inv = Invocation(S(1:2));
+                    obj.allInvocations{length(obj.allInvocations) + 1} = inv;
+
                     for i=1:obj.mockeryLength
                         if obj.mockery{i,3} > 0 && ...
-                           obj.mockery{i,1}.matches(Invocation(S(1:2)))
+                           obj.mockery{i,1}.matches(inv)
                             res = obj.mockery{i,2}{1};
                             obj.mockery{i,3} = obj.mockery{i,3} - 1;
                             if isa(res, 'MException')
@@ -154,7 +164,21 @@ classdef Mock < handle
                 self.mockery{self.mockeryLength, 3} = inf;
             end;
         end;
+
+        function verify(self, S)
+            import mmockito.internal.*;
+
+            invmatcher = InvocationMatcher(Invocation(S(1:2)));
             
+            for i=1:length(self.allInvocations)
+                if invmatcher.matches(self.allInvocations{i})
+                    return;
+                end;
+            end;
+
+            ME = VerificationError();
+            throw(ME);
+        end;
     end
     
 end
