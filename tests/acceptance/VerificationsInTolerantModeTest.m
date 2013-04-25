@@ -14,7 +14,7 @@ classdef VerificationsInTolerantModeTest < matlab.unittest.TestCase
             % Then
             m.verify.setParam(10);
             m.verify.goHome();
-            testCase.assertError(@() m.verify.isThereTheGod(), ?VerificationError);
+            testCase.assertError(@() m.verify.isThereTheGod(), 'mmockito:VerificationError');
         end
         
         function verificationOnRealObject_success(testCase)
@@ -31,7 +31,7 @@ classdef VerificationsInTolerantModeTest < matlab.unittest.TestCase
             m = Mock(RealClass, 'tolerant');
             % When
             % Then
-            testCase.assertError(@() m.verify.get(10), ?VerificationError);
+            testCase.assertError(@() m.verify.get(10), 'mmockito:VerificationError');
         end
         
         function numberOfInvocations(testCase)
@@ -48,19 +48,19 @@ classdef VerificationsInTolerantModeTest < matlab.unittest.TestCase
             m.verify.one().atLeast(1);
             testCase.assertError(@() ...
                 m.verify.one().atLeast(2), ...
-                ?VerificationError);
+                'mmockito:VerificationError');
             testCase.assertError(@() ...
                 m.verify.one().atMost(0), ...
-                ?VerificationError);
+                'mmockito:VerificationError');
             m.verify.one().atMost(1);
             m.verify.one().atMost(2);
             m.verify.one(1).times(0);
             testCase.assertError(@()...
                 m.verify.one(pi).times(1), ...
-                ?VerificationError);
+                'mmockito:VerificationError');
             testCase.assertError(@() ...
                 m.verify.one().never(), ...
-                ?VerificationError);
+                'mmockito:VerificationError');
             
             m.verify.two(pi).times(2);
             m.verify.two(AnyArgs).times(2);
@@ -89,7 +89,7 @@ classdef VerificationsInTolerantModeTest < matlab.unittest.TestCase
             % Then
             m.verifyInOrder;
             testCase.assertError(@()...
-                m.verify.second(), ?VerificationError);
+                m.verify.second(), 'mmockito:VerificationError');
         end
         
         function verificationInOrder_onMultipleMocks(testCase)
