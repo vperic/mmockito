@@ -6,24 +6,40 @@ classdef Mock < handle
     %       (Invocation, result, numberOfCalls)
     % where numberOfCalls is the amount of times a given call can be
     % matched (accepting inf for infinite).
+    %
+    % If we are mocking a real object, then realMocked is true and
+    % mockedObj is the mocked objects' handle. 
     
     properties
         mockery = {};
         mockeryLength = 0;
         
         strict = false;
+
+        mockedObj;
+        realMocked = false;
     end
     
     methods
-        function self = Mock(str)
+        function self = Mock(arg1, arg2)
             if nargin == 0
                 return;
             end;
 
-            if strcmp(str, 'strict')
-                self.strict = true;
-            elseif strcmp(str, 'tolerant')
-                self.strict = false;
+            % TODO: use inputParser here
+            if nargin == 1
+                if strcmp(arg1, 'strict')
+                    self.strict = true;
+                elseif strcmp(arg1, 'tolerant')
+                    self.strict = false;
+                elseif isobject(arg1)
+                    self.mockedObj = arg1;
+                    self.realMocked = true;
+                end;
+            elseif nargin == 2
+                self.mockedObj = arg1;
+                self.realMocked = true;
+                self.strict = strcmp(arg2, 'strict');
             end;
         end;
 
@@ -66,7 +82,12 @@ classdef Mock < handle
                 % if subsref doesn't give us anything, throw an error only
                 % if we are in 'strict' mode
                 try
-                    varargout{1} = builtin('subsref', obj, S);
+                    % FIXME: support multiple return args from builtin
+                    if obj.realMocked == true
+                        varargout{1} = builtin('subsref', obj.mockedObj, S);
+                    else
+                        varargout{1} = builtin('subsref', obj, S);
+                    end;
                 catch ME
                     if obj.strict
                         rethrow(ME)
