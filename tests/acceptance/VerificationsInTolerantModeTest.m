@@ -43,7 +43,6 @@ classdef VerificationsInTolerantModeTest < matlab.unittest.TestCase
             m.two(pi);
             % Then
             m.verify.one().times(1);
-            m.verify.one(AnyArgs).times(1);
             m.verify.one().atLeast(0);
             m.verify.one().atLeast(1);
             testCase.assertError(@() ...
@@ -63,7 +62,6 @@ classdef VerificationsInTolerantModeTest < matlab.unittest.TestCase
                 'mmockito:VerificationError');
             
             m.verify.two(pi).times(2);
-            m.verify.two(AnyArgs).times(2);
             m.verify.zero().times(0);
             m.verify.zero().never();
         end
