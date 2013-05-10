@@ -10,8 +10,10 @@ classdef Mock < handle
     % If we are mocking a real object, then realMocked is true and
     % mockedObj is the mocked objects' handle. 
     %
-    % allInvocations is a cell array of all Invocations on the mock objects
+    % allInvocations is a cell array of tuples:
+    %       (Invocation, invocationID)
     % excluding the .when and .verify calls. It is later used in
+    % verification. invocationID is a unique identifier used for in order
     % verification.
     
     properties
@@ -51,6 +53,7 @@ classdef Mock < handle
 
         function varargout = subsref(obj, S)
             import mmockito.internal.*;
+            persistent invID;
 
             if S(1).type ~= '.'
                 ME = MException('mmockito:illegalCall', ...
@@ -72,7 +75,13 @@ classdef Mock < handle
                     % Invocation(S(1:2)) call
 
                     inv = Invocation(S(1:2));
-                    obj.allInvocations{length(obj.allInvocations) + 1} = inv;
+                    obj.allInvocations{size(obj.allInvocations, 1) + 1, 1} = inv;
+
+                    if isempty(invID)
+                        invID = 0;
+                    end;
+                    invID = invID + uint32(1);
+                    obj.allInvocations{size(obj.allInvocations, 1), 2} = invID;
 
                     for i=1:obj.mockeryLength
                         if obj.mockery{i,3} > 0 && ...
@@ -171,8 +180,8 @@ classdef Mock < handle
             invmatcher = InvocationMatcher(Invocation(S(1:2)));
             
             matchedCount = 0;
-            for i=1:length(self.allInvocations)
-                if invmatcher.matches(self.allInvocations{i})
+            for i=1:size(self.allInvocations, 1)
+                if invmatcher.matches(self.allInvocations{i,1})
                     matchedCount = matchedCount + 1;
                 end;
             end;            
