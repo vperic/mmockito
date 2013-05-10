@@ -170,8 +170,40 @@ classdef Mock < handle
 
             invmatcher = InvocationMatcher(Invocation(S(1:2)));
             
+            matchedCount = 0;
             for i=1:length(self.allInvocations)
                 if invmatcher.matches(self.allInvocations{i})
+                    matchedCount = matchedCount + 1;
+                end;
+            end;            
+            
+            if length(S) > 2
+                timesExpected = cell2mat(S(4).subs);
+                switch S(3).subs
+                    case 'times'
+                        if timesExpected == matchedCount
+                            return;
+                        end;
+                    case 'never'
+                        if matchedCount == 0
+                            return
+                        end;
+                    case 'atLeast'
+                        if matchedCount >= timesExpected
+                            return;
+                        end;
+                    case 'atMost'
+                        if matchedCount <= timesExpected
+                            return;
+                        end;
+                    otherwise
+                        ME = MException('mmockito:illegalCall', ...
+                        'When verifying, the only accepted keywords are "times", "never", "atMost" or "atLeast".');
+                        throw(ME);
+                end;
+            else
+                % default is atLeast(1)
+                if matchedCount >= 1
                     return;
                 end;
             end;
