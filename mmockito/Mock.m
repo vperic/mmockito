@@ -69,6 +69,8 @@ classdef Mock < handle
                 obj.when(S(2:end));
             elseif strcmp(S(1).subs, 'verify')
                 obj.verify(S(2:end));
+            elseif strcmp(S(1).subs, 'verifyZeroInteractions')
+                obj.verifyZeroInteractions;
             else
                 if length(S) > 1
                     % otherwise we get index exceeded errors due to the
@@ -220,6 +222,16 @@ classdef Mock < handle
             ME = VerificationError();
             throw(ME);
         end;
+        
+        function verifyZeroInteractions(self)
+            import mmockito.internal.*;
+
+            if size(self.allInvocations, 1) > 0
+                ME = VerificationError();
+                throw(ME);
+            end;
+        end;
+                
     end
     
 end
