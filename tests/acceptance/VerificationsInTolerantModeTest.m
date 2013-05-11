@@ -73,9 +73,9 @@ classdef VerificationsInTolerantModeTest < matlab.unittest.TestCase
             m.first();
             m.second();
             % Then
-            m.verifyInOrder();
-            m.verify.first();
-            m.verify.second();
+            ino = InOrder(m);
+            ino.verify(m).first();
+            ino.verify(m).second();
         end
         
         function verificationInOrder_failure_onSingleMock(testCase)
@@ -85,14 +85,41 @@ classdef VerificationsInTolerantModeTest < matlab.unittest.TestCase
             m.first();
             m.second();
             % Then
-            m.verifyInOrder;
+            ino = InOrder(m);
+            ino.verify(m).second();
             testCase.assertError(@()...
-                m.verify.second(), 'mmockito:VerificationError');
+                ino.verify(m).first(), 'mmockito:VerificationError');
         end
         
         function verificationInOrder_onMultipleMocks(testCase)
-            % TODO
+            m = Mock();
+            m2 = Mock();
+            
+            m.first();
+            m2.second();
+            m.third();
+            
+            ino = InOrder(m, m2);
+            ino.verify(m).first();
+            ino.verify(m2).second();
+            ino.verify(m).third();
         end
+        
+        function verificationInOrder_failure_onMultipleMocks(testCase)
+            m = Mock();
+            m2 = Mock();
+            
+            m.first();
+            m2.second();
+            m.third();
+            
+            ino = InOrder(m, m2);
+            ino.verify(m).first();
+            ino.verify(m).third();
+
+            testCase.assertError(@()...
+                ino.verify(m2).second(), 'mmockito:VerificationError');            
+        end;
         
         % TODO: mock.verifyZeroInteractions
         % TODO: mock.verifyNoMoreInteractions
