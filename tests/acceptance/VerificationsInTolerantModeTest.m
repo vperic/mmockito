@@ -136,8 +136,15 @@ classdef VerificationsInTolerantModeTest < matlab.unittest.TestCase
                 m.verifyZeroInteractions, 'mmockito:VerificationError');
         end;        
         
-        % TODO: mock.verifyZeroInteractions
-        % TODO: mock.verifyNoMoreInteractions
+        function verifyNoMoreInteractions_success(testCase)
+            m = Mock();
+            m.first();
+            m.second();
+            ino = InOrder(m);
+            
+            ino.verify(m).second();
+            ino.verifyNoMoreInteractions;
+        end;
     end
     
 end

@@ -52,6 +52,8 @@ classdef InOrder < handle
         function answer = subsref(self, S)
             if strcmp(S(1).subs, 'verify')
                 self.verify(S(2:end));
+            elseif strcmp(S(1).subs, 'verifyNoMoreInteractions')
+                self.verifyNoMoreInteractions();
             else
                 answer = builtin('subsref', self, S);
             end;
@@ -74,6 +76,13 @@ classdef InOrder < handle
             
             ME = VerificationError();
             throw(ME);            
+        end;
+        
+        function verifyNoMoreInteractions(self)
+            if self.currentPos < size(self.allInvocations,1)
+                ME = VerificationError();
+                throw(ME);
+            end;
         end;
     end
     
