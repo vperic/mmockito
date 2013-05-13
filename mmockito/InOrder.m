@@ -16,9 +16,7 @@ classdef InOrder < handle
     %
     %   allInvocations is a tuple of:
     %           (mock, Invocation, InvocationID)
-    %   where mock is a reference to a mock object. The method "insert"
-    %   takes one such row and inserts it at the appropriate place,
-    %   maintaining ascending order on InvocationID.
+    %   where mock is a reference to a mock object. 
     
     properties
         allInvocations = {};
