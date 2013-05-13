@@ -6,6 +6,9 @@ classdef Any < Matcher
     %       
     %       Any(class) fails if argument does not derive from class. class
     %                  can be given by its classname of meta.class instance
+    %
+    %   Deriving from an class is understood as returning true from an
+    %   "isa" call.
     
     % Internally, just falls back on the IsInstanceOf(class) constraint.
     %
@@ -19,12 +22,15 @@ classdef Any < Matcher
     
     methods
         function self = Any(varargin)
-            import matlab.unittest.constraints.*;
-            
             if nargin==0
                 self.passAlways = true;
             elseif nargin==1
-                self.c = IsInstanceOf(varargin{1});
+                class = varargin{1};
+                if ~ischar(class)
+                    class = class.Name;
+                end;
+
+                self.c = class;
             else
                 ME = MException('mmockito:illegalMatcher', ...
                 'Any can only be called with zero or one arguments.');
@@ -32,13 +38,11 @@ classdef Any < Matcher
             end;
         end;
         
-        function answer = satisfiedBy(self, actual)            
-            import matlab.unittest.constraints.*;
-            
+        function answer = satisfiedBy(self, actual)
             if self.passAlways
                 answer = true;
             else
-                answer = satisfiedBy(self.c, actual);
+                answer = isa(actual, self.c);
             end;
         end;
     end
