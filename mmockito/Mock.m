@@ -77,13 +77,13 @@ classdef Mock < handle
                     % Invocation(S(1:2)) call
 
                     inv = Invocation(S(1:2));
-                    obj.allInvocations{size(obj.allInvocations, 1) + 1, 1} = inv;
+                    obj.allInvocations{end + 1, 1} = inv;
 
                     if isempty(invID)
                         invID = 0;
                     end;
                     invID = invID + uint32(1);
-                    obj.allInvocations{size(obj.allInvocations, 1), 2} = invID;
+                    obj.allInvocations{end, 2} = invID;
 
                     for i=1:obj.mockeryLength
                         if obj.mockery{i,3} > 0 && ...
