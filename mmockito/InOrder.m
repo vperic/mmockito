@@ -62,7 +62,7 @@ classdef InOrder < handle
             
             % TODO: error-handling, more than one mock, no mocks etc.
             mock = S(1).subs{1};
-            invmatcher = InvocationMatcher(Invocation(S(2:3)));
+            invmatcher = InvocationPattern(Invocation(S(2:3)));
             
             for i = self.currentPos+1:size(self.allInvocations, 1)
                 self.currentPos = self.currentPos + 1;

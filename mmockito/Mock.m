@@ -128,7 +128,7 @@ classdef Mock < handle
             %           '()', {[6]})
             import mmockito.internal.*;
 
-            invmatcher = InvocationMatcher(Invocation(S(1:2)));
+            invmatcher = InvocationPattern(Invocation(S(1:2)));
 
             % use index to handle multiple thenReturn statements
             ind = 3;
@@ -179,7 +179,7 @@ classdef Mock < handle
         function verify(self, S)
             import mmockito.internal.*;
 
-            invmatcher = InvocationMatcher(Invocation(S(1:2)));
+            invmatcher = InvocationPattern(Invocation(S(1:2)));
             
             matchedCount = 0;
             for i=1:size(self.allInvocations, 1)

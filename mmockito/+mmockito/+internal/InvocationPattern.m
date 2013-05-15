@@ -1,15 +1,14 @@
-classdef InvocationMatcher
-    %InvocationMatcher converts given Invocation to use matchers
+classdef InvocationPattern
+    %InvocationPattern converts given Invocation to use matchers
     %   In order to actually compare an Invocation's arguments, we must
-    %   convert them to matchers (ie. Constraints, from
-    %   matlab.unittest.constraints). As such, InvocationMatcher is
-    %   constructed from an Invocation (whose constructor assures data
-    %   correctness) but provides a matches method which returns true if
-    %   the InvocationMatcher matches the given Invocation.
+    %   convert them to Matchers. InvocationPattern is constructed from an
+    %   Invocation (whose constructor assures data correctness) but 
+    %   provides a matches method which returns true if a given Invocation
+    %   matches the pattern represented by the InvocationPattern.
     
     %   We construct the matchers by inspecting S(2).subs of the passed
     %   Invocation. If the object is a matcher already, we leave it be; if
-    %   not, we convert it to an "IsEqualTo" matcher. There is a special 
+    %   not, we convert it to an "ArgEqualTo" matcher. There is a special 
     %   case when passed empty input - a 1x0 cell array is returned.
     %   Currently, this is handled with a separate if statement but a
     %   better way may be divised. 
@@ -20,7 +19,7 @@ classdef InvocationMatcher
     end
     
     methods
-        function self = InvocationMatcher(Invocation)
+        function self = InvocationPattern(Invocation)
             import mmockito.internal.*;
             
             self.func_name = Invocation.S(1).subs;
