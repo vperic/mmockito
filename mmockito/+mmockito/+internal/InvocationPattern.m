@@ -37,6 +37,11 @@ classdef InvocationPattern
                     if ~isa(matcher, 'Matcher')
                         newArgs{i} = ArgEqualTo(matcher);
                     else
+                        if isa(matcher, 'AnyArgs') && i ~= argLength
+                            ME = MException('mmockito:illegalMatcher',...
+                            'AnyArgs matcher must be the last matcher used.');
+                            throw(ME);
+                        end;
                         newArgs{i} = matcher;
                     end;
                 end;
@@ -61,7 +66,18 @@ classdef InvocationPattern
                 % special case, no arguments
                 answer = satisfiedBy(self.args{1}, cell(1,0));
             elseif argLength ~= size(self.args, 2)
-                answer = false;
+                if isa(self.args{end}, 'AnyArgs')
+                    relLength = size(self.args, 2) - 1;
+                    % matchers before AnyArgs, if any, must still match
+                    if relLength > 0
+                        answer = all(cellfun(@satisfiedBy,...
+                        self.args(1:end-1), Inv.S(2).subs(1:relLength)));
+                    else
+                        answer = true;
+                    end;
+                else
+                    answer = false;
+                end;
             else
                 answer = all(cellfun(@satisfiedBy, self.args, Inv.S(2).subs));
             end;
