@@ -1,1 +1,9 @@
 mmockito - MATLAB mock framework based on Java Mockito
+
+To run tests, use the runtests function, which returns a TestResult object:
+
+    r = runtests('all');
+
+Other options are 'acceptance', 'unit', or the exact name of a unit test file.
+
+MATLAB 2013a or higher is required to run the tests.
