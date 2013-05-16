@@ -9,6 +9,10 @@ classdef Matcher
     %   The ArgThat Matcher allows the usage of Constraints as Matchers.
     %
     %   Example Matchers can be seen in the mmockito.matchers package.
+    %
+    %   See also:
+    %       Any
+    %       ArgThat
     
     %   Internally, Matchers are the same as Constraints from the new
     %   matlab.unittest module, except they do not need to provide a

@@ -1,5 +1,5 @@
-classdef InvocationMatcherTest < matlab.unittest.TestCase
-    %InvocationMatcherTest tests the behavior of InvocationMatcher
+classdef InvocationPatternTest < matlab.unittest.TestCase
+    %InvocationPatternTest tests the behavior of InvocationPattern
     %   * Test the constructor.
     %   * Test that matches works on identical Invocations.
     %   * Test different method names.
@@ -15,7 +15,7 @@ classdef InvocationMatcherTest < matlab.unittest.TestCase
             
             i = Invocation(substruct('.', 'asdf', '()', {[5] 'string'}));
             
-            im = InvocationMatcher(i);
+            im = InvocationPattern(i);
             
             tc.assertEqual(im.func_name, 'asdf');
         end;
@@ -26,8 +26,8 @@ classdef InvocationMatcherTest < matlab.unittest.TestCase
             inv = Invocation(substruct('.', 'asdf', '()', {[5]}));
             inv2 = Invocation(substruct('.', 'asdf', '()', {[5]}));
             
-            im = InvocationMatcher(inv);
-            im2 = InvocationMatcher(inv2);
+            im = InvocationPattern(inv);
+            im2 = InvocationPattern(inv2);
             
             tc.assertTrue(im.matches(inv));
             tc.assertTrue(im.matches(inv2));
@@ -41,8 +41,8 @@ classdef InvocationMatcherTest < matlab.unittest.TestCase
             inv2 = Invocation(substruct('.', 'asdf', '()', {[5] [6]}));
             inv3 = Invocation(substruct('.', 'asdf', '()', {[4]}));
             
-            im = InvocationMatcher(inv);
-            im2 = InvocationMatcher(inv2);
+            im = InvocationPattern(inv);
+            im2 = InvocationPattern(inv2);
             
             tc.assertFalse(im.matches(inv2));
             tc.assertFalse(im.matches(inv3));
@@ -55,7 +55,7 @@ classdef InvocationMatcherTest < matlab.unittest.TestCase
             i = Invocation(substruct('.', 'asdf', '()', {[5]}));
             i2 = Invocation(substruct('.', 'fdsa', '()', {[5]}));
             
-            im = InvocationMatcher(i);
+            im = InvocationPattern(i);
             
             tc.assertFalse(im.matches(i2));
         end;
@@ -71,7 +71,7 @@ classdef InvocationMatcherTest < matlab.unittest.TestCase
             i3 = Invocation(substruct('.', 'asdf', '()', {6 7 8 9}));            
             i4 = Invocation(substruct('.', 'asdf', '()', {6}));
 
-            im = InvocationMatcher(i);
+            im = InvocationPattern(i);
 
             tc.assertFalse(im.matches(i2));
             tc.assertFalse(im.matches(i3));
@@ -87,7 +87,7 @@ classdef InvocationMatcherTest < matlab.unittest.TestCase
             i3 = Invocation(substruct('.', 'asdf', '()', {'sting' 'me'}));            
             i4 = Invocation(substruct('.', 'asdf', '()', {'stringy'}));
 
-            im = InvocationMatcher(i);
+            im = InvocationPattern(i);
 
             tc.assertFalse(im.matches(i2));
             tc.assertFalse(im.matches(i3));
@@ -103,7 +103,7 @@ classdef InvocationMatcherTest < matlab.unittest.TestCase
             i3 = Invocation(substruct('.', 'asdf', '()', {[]}));
             i4 = Invocation(substruct('.', 'asdf', '()', {[] 5}));
             
-            im = InvocationMatcher(i);
+            im = InvocationPattern(i);
             
             tc.assertFalse(im.matches(i2));
             tc.assertFalse(im.matches(i3));

@@ -1,6 +1,66 @@
 classdef Mock < handle
-    %UNTITLED Summary of this class goes here
-    %   Detailed explanation goes here
+    %Mock allows verification and stubbing on itself
+    %   Mock objects will record all method calls performed on them, so
+    %   that they can later be verified, and can also stub methods to
+    %   return canned answers. Inheriting from a real object and using
+    %   argument matchers is also supported.
+    %
+    %   To stub a method, call the when method on a mock object:
+    %
+    %       mock.when.stubbedMethod(args).thenReturn(res)
+    %
+    %   * stubbedMethod can be anything other than "when" or "verify"
+    %   * thenReturn statements can be chained, with the last one remaining
+    %   valid
+    %   * also supported are thenPass (shorthand for thenReturn(true)) and
+    %   thenThrow(MException) to stub an exception
+    %   * each then* statement can be followed by "times(n)" specifying the
+    %   number of times the stubbed value should be returned. Example:
+    %
+    %       mock.when.method().thenPass().times(3).thenThrow(ME)
+    %
+    %
+    %   To verify, call the verify method:
+    %
+    %       mock.verify.method(args)
+    %
+    %   * a VerificationError will be thrown if verification fails
+    %   * it is possible to quantify the expectation by adding a keyword,
+    %   one of: times(n), never(), atLeast(n) or atMost(n). Example:
+    %
+    %       mock.verify.method().atMost(3)
+    %
+    %   * verifyZeroInteractions is a special method, verifying the mock
+    %   object wasn't interacted with at all. Example:
+    %
+    %       mock.verifyZeroInteractions
+    %
+    %   
+    %   It is possible to use a Matcher instead of a constant argument both
+    %   when verifying and stubbing. Commonly used matchers are Any and
+    %   ArgThat (provides an interface to matlab.unittest.constraints).
+    %   Matchers and constants can be combined freely. See also: Matcher 
+    %   Example usage:
+    %
+    %       mock.when.method(true, Any(?char)).thenReturn('ok!')
+    %
+    %   
+    %   Mocks can be tolerant and strict. Tolerant Mocks will silently pass
+    %   even for methods unknown to them, while strict Mocks will throw an
+    %   error. By default they are tolerant. The property can be set as an
+    %   argument to the constructor, either the string 'tolerant' or
+    %   'strict'. Example:
+    %
+    %       mock = Mock('strict')
+    %
+    %
+    %   It is possible to mock real objects. In that case, methods which
+    %   are not previously stubbed will be called on the real object. Mocks
+    %   can still be strict or tolerant. To avoid possibly unexpected
+    %   behaviour, it is recommended to always create these 'partial mocks'
+    %   as strict. Example:
+    %
+    %       mock = Mock(RealClass, 'strict')
     
     % General design: mockery is a cell array of tuples:
     %       (Invocation, result, numberOfCalls)
@@ -77,13 +137,13 @@ classdef Mock < handle
                     % Invocation(S(1:2)) call
 
                     inv = Invocation(S(1:2));
-                    obj.allInvocations{size(obj.allInvocations, 1) + 1, 1} = inv;
+                    obj.allInvocations{end + 1, 1} = inv;
 
                     if isempty(invID)
                         invID = 0;
                     end;
                     invID = invID + uint32(1);
-                    obj.allInvocations{size(obj.allInvocations, 1), 2} = invID;
+                    obj.allInvocations{end, 2} = invID;
 
                     for i=1:obj.mockeryLength
                         if obj.mockery{i,3} > 0 && ...
@@ -128,7 +188,7 @@ classdef Mock < handle
             %           '()', {[6]})
             import mmockito.internal.*;
 
-            invmatcher = InvocationMatcher(Invocation(S(1:2)));
+            invmatcher = InvocationPattern(Invocation(S(1:2)));
 
             % use index to handle multiple thenReturn statements
             ind = 3;
@@ -179,7 +239,7 @@ classdef Mock < handle
         function verify(self, S)
             import mmockito.internal.*;
 
-            invmatcher = InvocationMatcher(Invocation(S(1:2)));
+            invmatcher = InvocationPattern(Invocation(S(1:2)));
             
             matchedCount = 0;
             for i=1:size(self.allInvocations, 1)
