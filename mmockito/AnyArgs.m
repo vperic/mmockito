@@ -14,7 +14,7 @@ classdef AnyArgs < Matcher
     end
     
     methods
-        function answer = satisfiedBy(self, varargin)
+        function answer = matches(self, varargin)
             answer = true;
         end;
     end

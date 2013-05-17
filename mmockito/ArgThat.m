@@ -21,7 +21,7 @@ classdef ArgThat < Matcher
             self.c = constraint;
         end;
         
-        function answer = satisfiedBy(self, actual)
+        function answer = matches(self, actual)
             import matlab.unittest.constraints.*;
 
             answer = satisfiedBy(self.c, actual);

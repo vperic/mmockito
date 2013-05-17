@@ -1,7 +1,7 @@
 classdef MatchersTest < matlab.unittest.TestCase
     %MatchersTest tests the behavior of Matchers
     %   Matchers are generally simple, we usually check the constructor
-    %   error handling and the satisfiedBy method.
+    %   error handling and the matches method.
     
     properties
     end
@@ -14,13 +14,13 @@ classdef MatchersTest < matlab.unittest.TestCase
             tc.assertError(@() ArgThat(3), 'mmockito:illegalMatcher');
         end;
         
-        function test_ArgThat_satisfiedBy(tc)
+        function test_ArgThat_matches(tc)
             import matlab.unittest.constraints.*;
             
             a = ArgThat(IsLessThan(4));
             
-            tc.assertTrue(a.satisfiedBy(3));
-            tc.assertFalse(a.satisfiedBy(5));
+            tc.assertTrue(a.matches(3));
+            tc.assertFalse(a.matches(5));
         end;
         
         function test_Any_constructor(tc)
@@ -31,21 +31,21 @@ classdef MatchersTest < matlab.unittest.TestCase
             tc.assertError(@() Any(1,2), 'mmockito:illegalMatcher');
         end;
         
-        function test_Any_satisfiedBy(tc)
+        function test_Any_matches(tc)
             import matlab.unittest.constraints.*;
             
             a = Any();
             b = Any(?logical);
             
-            tc.assertTrue(a.satisfiedBy(4));
-            tc.assertTrue(a.satisfiedBy('str'));
-            tc.assertTrue(a.satisfiedBy(cell(4,3)));
+            tc.assertTrue(a.matches(4));
+            tc.assertTrue(a.matches('str'));
+            tc.assertTrue(a.matches(cell(4,3)));
             
-            tc.assertTrue(b.satisfiedBy(true));
-            tc.assertTrue(b.satisfiedBy([true false]));
-            tc.assertFalse(b.satisfiedBy(1));
-            tc.assertFalse(b.satisfiedBy('str'));
-            tc.assertFalse(b.satisfiedBy(?logical));
+            tc.assertTrue(b.matches(true));
+            tc.assertTrue(b.matches([true false]));
+            tc.assertFalse(b.matches(1));
+            tc.assertFalse(b.matches('str'));
+            tc.assertFalse(b.matches(?logical));
         end;
         
         function test_NumberBetween_constructor(tc)
@@ -58,15 +58,15 @@ classdef MatchersTest < matlab.unittest.TestCase
             tc.assertError(@() NumberBetween(5, 'str'), 'mmockito:illegalMatcher');
         end;
         
-        function test_NumberBetween_satisfiedBy(tc)
+        function test_NumberBetween_matches(tc)
             import mmockito.matchers.*;
             
             m = NumberBetween(3.5, intmax);
             
-            tc.assertTrue(m.satisfiedBy(4));
-            tc.assertTrue(m.satisfiedBy(5.72));
-            tc.assertFalse(m.satisfiedBy(1));
-            tc.assertFalse(m.satisfiedBy(1e100));
+            tc.assertTrue(m.matches(4));
+            tc.assertTrue(m.matches(5.72));
+            tc.assertFalse(m.matches(1));
+            tc.assertFalse(m.matches(1e100));
         end;
         
         function test_StringContaining_constructor(tc)
@@ -78,13 +78,13 @@ classdef MatchersTest < matlab.unittest.TestCase
             tc.assertError(@() StringContaining(5), 'mmockito:illegalMatcher');
         end;
         
-        function test_StringContaining_satisfiedBy(tc)
+        function test_StringContaining_matches(tc)
             import mmockito.matchers.*;
             
             s = StringContaining('asD');
             
-            tc.assertTrue(s.satisfiedBy('asDfd'));
-            tc.assertFalse(s.satisfiedBy('asd'));
+            tc.assertTrue(s.matches('asDfd'));
+            tc.assertFalse(s.matches('asd'));
         end;
     end
     

@@ -38,7 +38,7 @@ classdef Any < Matcher
             end;
         end;
         
-        function answer = satisfiedBy(self, actual)
+        function answer = matches(self, actual)
             if self.passAlways
                 answer = true;
             else

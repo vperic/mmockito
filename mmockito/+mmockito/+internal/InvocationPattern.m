@@ -64,13 +64,13 @@ classdef InvocationPattern
             argLength = size(Inv.S(2).subs, 2);
             if argLength == 0
                 % special case, no arguments
-                answer = satisfiedBy(self.args{1}, cell(1,0));
+                answer = matches(self.args{1}, cell(1,0));
             elseif argLength ~= size(self.args, 2)
                 if isa(self.args{end}, 'AnyArgs')
                     relLength = size(self.args, 2) - 1;
                     % matchers before AnyArgs, if any, must still match
                     if relLength > 0
-                        answer = all(cellfun(@satisfiedBy,...
+                        answer = all(cellfun(@matches,...
                         self.args(1:end-1), Inv.S(2).subs(1:relLength)));
                     else
                         answer = true;
@@ -79,7 +79,7 @@ classdef InvocationPattern
                     answer = false;
                 end;
             else
-                answer = all(cellfun(@satisfiedBy, self.args, Inv.S(2).subs));
+                answer = all(cellfun(@matches, self.args, Inv.S(2).subs));
             end;
         end;
 

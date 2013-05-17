@@ -23,7 +23,7 @@ classdef NumberBetween < Matcher
             self.upperBound = up;
         end;
         
-        function answer = satisfiedBy(self, num)
+        function answer = matches(self, num)
             if self.lowerBound <= num && num <= self.upperBound
                 answer = true;
             else

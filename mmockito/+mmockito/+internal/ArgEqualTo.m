@@ -13,14 +13,14 @@ classdef ArgEqualTo < Matcher
     properties
         expected;
 
-        constraint;
+        matcher;
     end
     
     methods
         function self = ArgEqualTo(expected)
             try
                 import matlab.unittest.constraints.*;
-                self.constraint = ArgThat(IsEqualTo(expected));
+                self.matcher = ArgThat(IsEqualTo(expected));
             catch
                 if isa(expected, 'numeric') || isa(expected, 'char')
                     self.expected = expected;
@@ -32,9 +32,9 @@ classdef ArgEqualTo < Matcher
             end;
         end;
         
-        function answer = satisfiedBy(self, actual)
+        function answer = matches(self, actual)
             try
-                answer = satisfiedBy(self.constraint, actual);
+                answer = matches(self.matcher, actual);
             catch
                 if isa(self.expected, char)
                     answer = strcmp(self.expected, actual);

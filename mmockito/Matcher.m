@@ -3,7 +3,7 @@ classdef Matcher
     %   When mocking, we will sometimes want to specify a rule to match an
     %   argument to, not just a constant (eg. "all doubles" or "all strings
     %   starting with xx"). Matchers are the interface which allows us to
-    %   do this. Each Matcher only needs to provide a method, satisfiedBy, 
+    %   do this. Each Matcher only needs to provide a method, matches, 
     %   which returns true if a given value satisfies the Matcher.
     %
     %   The ArgThat Matcher allows the usage of Constraints as Matchers.
@@ -22,8 +22,8 @@ classdef Matcher
     %   diagnostic has to be provided).
     
     methods(Abstract)
-        % satisfiedBy returns true if actual can be matched by matcher
-        answer = satisfiedBy(matcher, actual);
+        % matches returns true if actual can be matched by matcher
+        answer = matches(matcher, actual);
     end
     
 end

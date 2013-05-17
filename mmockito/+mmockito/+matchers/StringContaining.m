@@ -23,7 +23,7 @@ classdef StringContaining < Matcher
             self.substring = str;
         end;
         
-        function answer = satisfiedBy(self, str)
+        function answer = matches(self, str)
             answer = ~isempty(strfind(str, self.substring));
         end;
     end
