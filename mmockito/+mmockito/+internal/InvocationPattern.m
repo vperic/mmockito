@@ -3,8 +3,8 @@ classdef InvocationPattern
     %   In order to actually compare an Invocation's arguments, we must
     %   convert them to Matchers. InvocationPattern is constructed from an
     %   Invocation (whose constructor assures data correctness) but 
-    %   provides a matches method which returns true if a given Invocation
-    %   matches the pattern represented by the InvocationPattern.
+    %   provides a matchedBy method which returns true if a given Invocation
+    %   is matched by the pattern represented by the InvocationPattern.
     
     %   We construct the matchers by inspecting S(2).subs of the passed
     %   Invocation. If the object is a matcher already, we leave it be; if
@@ -51,7 +51,7 @@ classdef InvocationPattern
             
         end;
 
-        function answer = matches(self, Inv)
+        function answer = matchedBy(self, Inv)
             % returns true if Inv can match self
             import matlab.unittest.constraints.*;
             import mmockito.internal.*;

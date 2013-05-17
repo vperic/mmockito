@@ -66,7 +66,7 @@ classdef InOrder < handle
             
             for i = self.currentPos+1:size(self.allInvocations, 1)
                 self.currentPos = self.currentPos + 1;
-                if invmatcher.matches(self.allInvocations{i,2}) && ...
+                if invmatcher.matchedBy(self.allInvocations{i,2}) && ...
                    self.allInvocations{i, 1} == mock
                     return;
                 end;

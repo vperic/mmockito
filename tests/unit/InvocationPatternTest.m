@@ -1,7 +1,7 @@
 classdef InvocationPatternTest < matlab.unittest.TestCase
     %InvocationPatternTest tests the behavior of InvocationPattern
     %   * Test the constructor.
-    %   * Test that matches works on identical Invocations.
+    %   * Test that matchedBy works on identical Invocations.
     %   * Test different method names.
     %   * Test a few matchers to see if they work.
     %   * Test matcher / non-matcher combination
@@ -29,9 +29,9 @@ classdef InvocationPatternTest < matlab.unittest.TestCase
             im = InvocationPattern(inv);
             im2 = InvocationPattern(inv2);
             
-            tc.assertTrue(im.matches(inv));
-            tc.assertTrue(im.matches(inv2));
-            tc.assertTrue(im2.matches(inv2));
+            tc.assertTrue(im.matchedBy(inv));
+            tc.assertTrue(im.matchedBy(inv2));
+            tc.assertTrue(im2.matchedBy(inv2));
         end;
         
         function test_notEqualInvocations(tc)
@@ -44,9 +44,9 @@ classdef InvocationPatternTest < matlab.unittest.TestCase
             im = InvocationPattern(inv);
             im2 = InvocationPattern(inv2);
             
-            tc.assertFalse(im.matches(inv2));
-            tc.assertFalse(im.matches(inv3));
-            tc.assertFalse(im2.matches(inv3));
+            tc.assertFalse(im.matchedBy(inv2));
+            tc.assertFalse(im.matchedBy(inv3));
+            tc.assertFalse(im2.matchedBy(inv3));
         end;
         
         function test_differentMethodNames(tc)
@@ -57,7 +57,7 @@ classdef InvocationPatternTest < matlab.unittest.TestCase
             
             im = InvocationPattern(i);
             
-            tc.assertFalse(im.matches(i2));
+            tc.assertFalse(im.matchedBy(i2));
         end;
             
         
@@ -73,9 +73,9 @@ classdef InvocationPatternTest < matlab.unittest.TestCase
 
             im = InvocationPattern(i);
 
-            tc.assertFalse(im.matches(i2));
-            tc.assertFalse(im.matches(i3));
-            tc.assertTrue(im.matches(i4));
+            tc.assertFalse(im.matchedBy(i2));
+            tc.assertFalse(im.matchedBy(i3));
+            tc.assertTrue(im.matchedBy(i4));
         end;
         
         function test_ContainsSubstringMatcher(tc)
@@ -89,9 +89,9 @@ classdef InvocationPatternTest < matlab.unittest.TestCase
 
             im = InvocationPattern(i);
 
-            tc.assertFalse(im.matches(i2));
-            tc.assertFalse(im.matches(i3));
-            tc.assertTrue(im.matches(i4));
+            tc.assertFalse(im.matchedBy(i2));
+            tc.assertFalse(im.matchedBy(i3));
+            tc.assertTrue(im.matchedBy(i4));
         end;        
         
         function test_matcherNonMatcher(tc)
@@ -105,9 +105,9 @@ classdef InvocationPatternTest < matlab.unittest.TestCase
             
             im = InvocationPattern(i);
             
-            tc.assertFalse(im.matches(i2));
-            tc.assertFalse(im.matches(i3));
-            tc.assertTrue(im.matches(i4));
+            tc.assertFalse(im.matchedBy(i2));
+            tc.assertFalse(im.matchedBy(i3));
+            tc.assertTrue(im.matchedBy(i4));
         end;
     end;
     

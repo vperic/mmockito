@@ -147,7 +147,7 @@ classdef Mock < handle
 
                     for i=1:obj.mockeryLength
                         if obj.mockery{i,3} > 0 && ...
-                           obj.mockery{i,1}.matches(inv)
+                           obj.mockery{i,1}.matchedBy(inv)
                             res = obj.mockery{i,2}{1};
                             obj.mockery{i,3} = obj.mockery{i,3} - 1;
                             if isa(res, 'MException')
@@ -243,7 +243,7 @@ classdef Mock < handle
             
             matchedCount = 0;
             for i=1:size(self.allInvocations, 1)
-                if invmatcher.matches(self.allInvocations{i,1})
+                if invmatcher.matchedBy(self.allInvocations{i,1})
                     matchedCount = matchedCount + 1;
                 end;
             end;            
