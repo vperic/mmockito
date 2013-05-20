@@ -210,7 +210,19 @@ classdef StubbingInTolerantModeTest < matlab.unittest.TestCase
             % Then
             m.when.nonexistent().thenPass();  % This shall pass too.
         end
-
+        
+        function mustSpecify_exactNumberOfReturnValues(testCase)
+            m = Mock('tolerant');
+            
+            m.when.stub(5).thenReturn(1, 2);
+            
+            [a, b] = m.stub(5);
+            testCase.assertEqual(a, 1);
+            testCase.assertEqual(b, 2);
+            
+            testCase.assertError(@() m.stub(5), 'mmockito:illegalCall');
+            % TODO: check that [a,b,c ] = m.stub(5) also errors
+        end
 
     end
     

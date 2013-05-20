@@ -153,8 +153,14 @@ classdef Mock < handle
                             if isa(res, 'MException')
                                 throw(res);
                             else
-                                varargout = obj.mockery{i,2};
-                                return;
+                                if length(obj.mockery{i,2}) > 1 && nargout ~= length(obj.mockery{i,2})
+                                    ME = MException('mmockito:illegalCall',...
+                                    'Expected number of output results must match the mocked call.');
+                                    throw(ME);
+                                else
+                                    varargout = obj.mockery{i,2};
+                                    return;
+                                end;
                             end;
                         end;
                     end;
