@@ -1,5 +1,22 @@
 mmockito - MATLAB mock framework based on Java Mockito
 
+Usage
+=====
+
+The 'mmockito' directory should be added to MATLAB's path; it contains the most
+used classes. The main functionality is provided by the "Mock" class, which
+supports both stubbing and verification. In-order verification is provided by
+the "InOrder" class. The "Matcher" class is an interface for specifying
+argument matchers, "Any", "ArgThat" and "AnyArgs" are commonly used matchers.
+Some further matchers are provided in the mmockito.matchers package. The
+mmockito.internal package has internal class which should not be used by
+end-users.
+
+For more detailed information consult the help files of individual classes.
+
+Tests
+=====
+
 To run tests, use the runtests function, which returns a TestResult object:
 
     r = runtests('all');
