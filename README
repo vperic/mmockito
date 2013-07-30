@@ -1,5 +1,20 @@
 mmockito - MATLAB mock framework based on Java Mockito
 
+The latest version can always be downloaded from Github:
+
+  https://github.com/vperic/mmockito
+
+The project mailing list can be found on Google Groups:
+
+  https://groups.google.com/forum/#!forum/mmockito
+
+mmockito is distributed under the BSD license. All contributions are 
+welcome!
+
+Issues can be reported on the projects' Github page; code should also be 
+submitted as pull requests. Pull requests should include the 
+necessary tests; tests should be passing at all times.
+
 Usage
 =====
 
@@ -13,6 +28,11 @@ mmockito.internal package has internal class which should not be used by
 end-users.
 
 For more detailed information consult the help files of individual classes.
+
+More documentation, including a detailed overview of features and 
+comparison to Java Mockito, are available in my bachelor's thesis:
+
+  http://cyber.felk.cvut.cz/research/theses/detail.phtml?id=407
 
 Tests
 =====
