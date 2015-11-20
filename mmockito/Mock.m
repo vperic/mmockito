@@ -185,6 +185,18 @@ classdef Mock < handle
                 end;
             end;
         end;
+
+        function varargout = subsasgn(self, S, value)
+            switch S(1).type
+                case {'.', '{}'}
+                    if ~ self.realMocked
+                        varargout{1:nargout} = builtin('subsasgn', self, S, value);
+                    else
+                        varargout{1} = builtin('subsasgn', self.mockedObj, S, value);
+                        varargout{1} = self;
+                    end
+            end
+        end
         
         function when(self, S)
             % substruct('.','when',

@@ -223,7 +223,15 @@ classdef StubbingInTolerantModeTest < matlab.unittest.TestCase
             testCase.assertError(@() m.stub(5), 'mmockito:illegalCall');
             % TODO: check that [a,b,c ] = m.stub(5) also errors
         end
-
+       
+         function check_for_property_assignments_realclass(testCase)
+           m = Mock(RealClass, 'tolerant');
+           m.prop1 = 1;
+           m.prop2 = 'msg';
+           testCase.assertEqual(m.prop1, 1);
+           testCase.assertEqual(m.prop2, 'msg');
+        end
+        
     end
     
 end
