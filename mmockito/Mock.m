@@ -158,7 +158,12 @@ classdef Mock < handle
                                     'Expected number of output results must match the mocked call.');
                                     throw(ME);
                                 else
-                                    varargout = obj.mockery{i,2};
+                                     if isa(res, 'function_handle')
+                                        varargout = cell(1,nargout);
+                                        [varargout{:}] = res();
+                                     else
+                                        varargout = obj.mockery{i,2};
+                                     end
                                     return;
                                 end;
                             end;
