@@ -8,7 +8,6 @@
   	 	<connection>scm:git:git@github.com:ragavsathish/mmockito.git</connection>
   	 	<url>scm:git:git@github.com:ragavsathish/mmockito.git</url>
   	 	<developerConnection>scm:git:git@github.com:ragavsathish/mmockito.git</developerConnection>
-    <tag>HEAD</tag>
   </scm>
   <build>
 	 	<plugins>
