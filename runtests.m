@@ -1,17 +1,19 @@
 function r = runtests(what)
     import matlab.unittest.TestSuite;
-    addpath(fullfile(pwd, 'mmockito'));
-
+    rootDir = fileparts(which('runtests.m'));
+    testDir = fullfile(rootDir, 'tests');
+    addpath(fullfile(rootDir, 'mmockito'));
+    addpath(testDir);
     switch what,
         case 'all',
-            r = run(TestSuite.fromFolder('tests', 'IncludingSubfolders', true));
+            r = run(TestSuite.fromFolder(testDir, 'IncludingSubfolders', true));
         case 'acceptance',
-            r = run(TestSuite.fromFolder('tests\acceptance'));
+            r = run(TestSuite.fromFolder([testDir '\acceptance']));
         case 'unit',
-            r = run(TestSuite.fromFolder('tests\unit'));
+            r = run(TestSuite.fromFolder([testDir '\unit']));
         otherwise,
             try
-                r = run(TestSuite.fromFile(strcat('tests/unit/', what)));
+                r = run(TestSuite.fromFile([testDir '\unit' what]));
             catch ME
                 error('Do not know what to run. Try "unit" or "acceptance"');
             end;

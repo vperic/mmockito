@@ -158,7 +158,12 @@ classdef Mock < handle
                                     'Expected number of output results must match the mocked call.');
                                     throw(ME);
                                 else
-                                    varargout = obj.mockery{i,2};
+                                     if isa(res, 'function_handle')
+                                        varargout = cell(1,nargout);
+                                        [varargout{:}] = res();
+                                     else
+                                        varargout = obj.mockery{i,2};
+                                     end
                                     return;
                                 end;
                             end;
@@ -185,6 +190,18 @@ classdef Mock < handle
                 end;
             end;
         end;
+
+        function varargout = subsasgn(self, S, value)
+            switch S(1).type
+                case {'.', '{}'}
+                    if ~ self.realMocked
+                        varargout{1:nargout} = builtin('subsasgn', self, S, value);
+                    else
+                        varargout{1} = builtin('subsasgn', self.mockedObj, S, value);
+                        varargout{1} = self;
+                    end
+            end
+        end
         
         function when(self, S)
             % substruct('.','when',
